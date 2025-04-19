@@ -3,70 +3,50 @@
 namespace App\Http\Controllers\dataMaster;
 
 use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
+use App\Http\Requests\dataMaster\KelasRequest;
 use App\Models\DataMaster\Kelas;
+use App\Services\dataMaster\KelasService;
+use Illuminate\Contracts\View\Factory;
+use Illuminate\Contracts\View\View;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Http\RedirectResponse;
 
 class KelasController extends Controller
 {
-    // Menampilkan daftar kelas
-    public function index()
+    private Kelas $kelas;
+    private KelasService $kelasService;
+
+    public function __construct(Kelas $kelas, KelasService $kelasService)
     {
-        $kelas = Kelas::all(); // Mengambil semua data kelas
-        return view('backEnd.dataMaster.kelas.index', compact('kelas')); // Mengarahkan ke view index
+        $this->kelas = $kelas;
+        $this->kelasService = $kelasService;
     }
 
-    // Menampilkan form untuk menambah kelas baru
-    public function create()
+    public function index(): View|Factory
     {
-        return view('backEnd.dataMaster.kelas.create'); // Mengarahkan ke view create
+        $kelas = $this->kelas->orderBy('id')->get();
+        return view('backEnd.dataMaster.kelas.index', compact('kelas'));
+
     }
 
-    // Menyimpan data kelas baru
-    public function store(Request $request)
+    public function store(KelasRequest $request): RedirectResponse
     {
-        // Validasi input
-        $request->validate([
-            'nama_kelas' => 'required|string|max:255|unique:kelas',
-        ]);
-
-        // Menyimpan data kelas ke database
-        Kelas::create([
-            'nama_kelas' => $request->nama_kelas,
-        ]);
-
-        return redirect()->route('indexKelas')->with('success', 'Kelas berhasil ditambahkan!');
+        return $this->kelasService->save($request);
     }
 
-    // Menampilkan form edit untuk kelas tertentu berdasarkan ID
-    public function edit($id)
+    public function show(Category $kelas): JsonResponse
     {
-        $kelas = Kelas::findOrFail($id); // Mencari kelas berdasarkan ID
-        return view('backEnd.dataMaster.kelas.edit', compact('kelas')); // Mengarahkan ke view edit
-    }
+        if(!$kelas){
+            return response()->json([
+                'status'  => false,
+                'message' => 'Data Not Found',
+            ], JsonResponse::HTTP_OK);
+        }
 
-    // Mengupdate data kelas berdasarkan ID
-    public function update(Request $request, $id)
-    {
-        // Validasi input
-        $request->validate([
-            'nama_kelas' => 'required|string|max:255|unique:kelas,nama_kelas,' . $id,
-        ]);
-
-        // Mengupdate data kelas di database
-        $kelas = Kelas::findOrFail($id);
-        $kelas->update([
-            'nama_kelas' => $request->nama_kelas,
-        ]);
-
-        return redirect()->route('indexKelas')->with('success', 'Kelas berhasil diupdate!');
-    }
-
-    // Menghapus data kelas berdasarkan ID
-    public function destroy($id)
-    {
-        $kelas = Kelas::findOrFail($id); // Mencari kelas berdasarkan ID
-        $kelas->delete(); // Menghapus kelas
-
-        return redirect()->route('indexKelas')->with('success', 'Kelas berhasil dihapus!');
+        return response()->json([
+            'status'  => true,
+            'message' => 'Data Not Found',
+            'data'  => $kelas
+        ], JsonResponse::HTTP_OK);
     }
 }

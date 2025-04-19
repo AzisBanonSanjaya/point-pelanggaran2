@@ -48,7 +48,8 @@ Route::middleware(['auth'])->group(function () {
         });
     });
 
-    Route::prefix('master_data')->group(function () {
+    Route::group(['prefix'=>'master_data',], function(){
         Route::resource('kelas', KelasController::class);
     });
+
 });

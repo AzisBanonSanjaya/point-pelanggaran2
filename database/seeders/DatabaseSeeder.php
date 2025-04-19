@@ -26,6 +26,7 @@ class DatabaseSeeder extends Seeder
             'user-delete',
             'role-create',
             'permission-create',
+            'kelas-list',
         ];
 
         foreach ($permissions as $permission) {

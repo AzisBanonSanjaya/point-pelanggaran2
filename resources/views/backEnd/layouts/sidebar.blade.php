@@ -3,8 +3,8 @@
 
     <div class="d-flex align-items-center justify-content-between">
     <a href="{{ route('dashboard') }}" class="logo d-flex align-items-center text-center">
-        <img src="{{ asset('assets/img/sman1.jfif') }}" alt="SMAN 1 BANJARAN" class="img-logo" width="60" height="50">
-        {{-- <span class="d-none d-lg-block">NiceAdmin</span> --}}
+        <!-- <img src="{{ asset('assets/img/sman1.jfif') }}" alt="SMAN 1 BANJARAN" class="img-logo" width="60" height="50"> -->
+        <span class="d-none d-lg-block">NiceAdmin</span> 
     </a>
       <i class="bi bi-list toggle-sidebar-btn"></i>
     </div><!-- End Logo -->
@@ -74,11 +74,20 @@
         @endcan
 
         <!-- @can('user-list') -->
-            <li class="nav-item">
-                <a class="nav-link {{ (request()->is('master_data/kelas*')) ? 'active' : 'collapsed' }}" href="{{route('kelas.index')}}"  class="">
-                <i class="bi bi-person"></i><span>kelas</span>
-                </a>
-            </li>
+        <li class="nav-item">
+            <a class="nav-link  {{ (request()->is('master_data/*')) ? '' : 'collapsed' }}" data-bs-target="#forms-nav" data-bs-toggle="collapse" href="#" aria-expanded="false">
+              <i class="bi bi-journal-text"></i><span>Master Data</span><i class="bi bi-chevron-down ms-auto"></i>
+            </a>
+            <ul id="forms-nav" class="nav-content collapse  {{ (request()->is('master_data/*')) ? 'show' : '' }}" data-bs-parent="#sidebar-nav" style="">
+              @can('kelas-list')
+                <li>
+                  <a class="nav-link {{ (request()->is('master_data/kelas*')) ? 'active' : 'collapsed' }}" href="{{route('kelas.index')}}">
+                    <i class="bi bi-circle"></i><span>Kelas</span>
+                  </a>
+                </li>
+              @endcan
+            </ul>
+          </li>
         <!-- @endcan -->
 
     </ul>
