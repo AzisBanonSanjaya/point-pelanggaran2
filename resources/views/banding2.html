@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <title>Hasil Banding Pelanggaran</title>
+  <style>
+    body {
+      background-color: #eef2f7;
+      margin: 0;
+      padding: 30px 10px;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      color: #2c3e50;
+    }
+
+    .container {
+      max-width: 650px;
+      margin: auto;
+      background-color: #ffffff;
+      border-radius: 12px;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+      overflow: hidden;
+    }
+
+    .header {
+      background: linear-gradient(to right, #34495e, #2c3e50);
+      color: white;
+      padding: 30px;
+      text-align: center;
+    }
+
+    .header h1 {
+      margin: 0;
+      font-size: 22px;
+    }
+
+    .body {
+      padding: 30px;
+    }
+
+    .body p {
+      line-height: 1.7;
+      margin-bottom: 15px;
+      font-size: 16px;
+    }
+
+    .status-box {
+      padding: 20px;
+      border-radius: 10px;
+      color: white;
+      margin: 20px 0;
+    }
+
+    .accepted {
+      background-color: #27ae60;
+    }
+
+    .rejected {
+      background-color: #c0392b;
+    }
+
+    .footer {
+      background-color: #f4f6fa;
+      text-align: center;
+      padding: 20px;
+      font-size: 13px;
+      color: #7f8c8d;
+    }
+
+    @media (max-width: 600px) {
+      .body, .header, .footer {
+        padding: 20px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <div class="header">
+      <h1>Hasil Banding Pelanggaran</h1>
+    </div>
+    <div class="body">
+      <p>Yth. <strong>Ahmad Rifai</strong>,</p>
+
+      <p>Berikut adalah hasil dari pengajuan banding yang Anda ajukan terhadap pelanggaran:</p>
+
+      <!-- Ganti class menjadi "accepted" jika banding diterima, atau "rejected" jika ditolak -->
+      <div class="status-box accepted">
+        <h3 style="margin-top: 0;">✅ Banding Anda DITERIMA</h3>
+        <p>Pelanggaran yang Anda ajukan telah ditinjau, dan poin pelanggaran telah dibatalkan sesuai klarifikasi yang diberikan.</p>
+      </div>
+
+      <!-- Contoh lain jika banding ditolak -->
+      <!--
+      <div class="status-box rejected">
+        <h3 style="margin-top: 0;">❌ Banding Anda DITOLAK</h3>
+        <p>Setelah dilakukan peninjauan, pelanggaran tetap dinyatakan valid dan poin tetap dikenakan.</p>
+      </div>
+      -->
+
+      <p>Jika Anda memiliki pertanyaan lebih lanjut, silakan menghubungi Guru BK secara langsung atau datang ke ruang BK.</p>
+
+      <p>Terima kasih atas perhatian dan kerja samanya.</p>
+
+      <p>Salam hormat,<br><strong>Guru BK SMAN 1 Banjaran</strong></p>
+    </div>
+    <div class="footer">
+      Email ini dikirim otomatis oleh sistem pelaporan sekolah. Mohon tidak membalas email ini.
+    </div>
+  </div>
+
+</body>
+</html>
