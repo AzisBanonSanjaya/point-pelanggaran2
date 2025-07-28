@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Mail\SubmittedMail;
 use App\Models\MasterData\Category;
+use App\Models\MasterData\ClassRoom;
 use App\Models\MasterData\IntervalPoint;
 use App\Models\SanctionDecision;
 use App\Models\SanctionDecisionDetail;
@@ -50,13 +51,11 @@ class SanctionDecisionController extends Controller
     public function create()
     {
         $sanctionsUser = SanctionDecision::pluck('user_id')->toArray();
-        $students = User::with('classRoom')->whereHas('roles', function($q){
-            $q->where('name', 'User');
-        })->whereNotIn('id', $sanctionsUser)->get(['id','name','username','class_room_id']);
+        $classRooms = ClassRoom::pluck('name')->unique()->toArray();
         $categories = Category::get(['id','name','point']);
         $calculatePoint = IntervalPoint::get(['id','name','from', 'to', 'type'])->toJson();
         
-        return view('backEnd.sanctionDecision.create', compact('students','categories','calculatePoint'));
+        return view('backEnd.sanctionDecision.create', compact('categories','calculatePoint','classRooms'));
     }
 
     /**
@@ -67,6 +66,7 @@ class SanctionDecisionController extends Controller
      */
     public function store(Request $request)
     {
+
        return $this->sanctionDecisionService->save($request);
     }
 

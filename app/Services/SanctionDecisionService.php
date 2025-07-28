@@ -22,10 +22,10 @@ class SanctionDecisionService
     {
         DB::beginTransaction();
         try {
-
-            if(count($request->category_id) == 0){
-                  return back()->with('error', 'Data Sanksi Wajib Dipilih');
+            if (!$request->has('pelanggaran') || count($request->pelanggaran) == 0) {
+                return back()->with('error', 'Data Pelanggaran Wajib Diisi')->withInput();
             }
+            
             $data = [
                 'user_id' => $request->user_id,
                 'code' => $request->code,
@@ -36,7 +36,11 @@ class SanctionDecisionService
             ];
 
             if ($sanctionDecision) {
-                $sanctionDecision->update(['created_by' => Auth::id(), 'total_point' => $request->total_point, 'status' => $request->total_point >= 76 ? 3 : 1, 'description' => null, 'file' => null]);
+                $sanctionDecision->update([
+                    'created_by' => Auth::id(),
+                    'total_point' => $request->total_point,
+                    'status' => $request->total_point >= 76 ? 3 : 1
+                ]);
             } else {
                 $sanctionDecision = SanctionDecision::create($data);
             }
@@ -44,9 +48,8 @@ class SanctionDecisionService
             $this->sanctionDecisionDetail($sanctionDecision, $request);
             DB::commit();
 
-            // if($request->total_point >= 20){
-                Mail::to('azisbanon01@gmail.com')->send(new SanctionDecisionMail($sanctionDecision));
-            // }
+            // Mail::to('azisbanon01@gmail.com')->send(new SanctionDecisionMail($sanctionDecision));
+
             Log::channel('log-transaction')->info(($sanctionDecision->wasRecentlyCreated ? 'Penentuan Sanksi Created!' : 'Penentuan Sanksi Updated!'), ['User' =>  Auth::user()->name]);
             return redirect()->route('penentuan-sanksi.index')->with('success', 'Data berhasil ' . ($sanctionDecision->wasRecentlyCreated ? 'ditambahkan!' : 'diubah!')); 
         
@@ -72,58 +75,43 @@ class SanctionDecisionService
         }
     }
 
-    private function sanctionDecisionDetail($sanctionDecision, $request)
+    private function sanctionDecisionDetail(SanctionDecision $sanctionDecision, Request $request)
     {
-        if ($sanctionDecision->id) {
-            // Ambil semua detail_id dari form
-            $inputDetailIds = $request->detail_id ?? [];
-            // Ambil semua detail yang sudah ada di DB untuk perbandingan
-            $existingDetails = SanctionDecisionDetail::where('sanction_decision_id', $sanctionDecision->id)->get();
-
-            foreach ($request->category_id as $key => $category_id) {
-                $detailId = $inputDetailIds[$key] ?? null;
-
-                if (!empty($request->file[$key])) {
-                    $file = $this->storeImage('pelanggaran', $request->file[$key]);
-                }
-
-                if ($detailId) {
-                    // Update detail jika ID ada
-                    $detail = SanctionDecisionDetail::find($detailId);
-                    if ($detail) {
-                        $detail->update([
-                            'category_id' => $category_id,
-                            'incident_date' => $request->incident_date[$key],
-                            'comment' => $request->comment[$key] ?? null,
-                            'file' => $file ?? $detail->file,
-                        ]);
-                    }
-                } else {
-                    // Tambahkan jika tidak ada ID
-                    SanctionDecisionDetail::create([
-                        'sanction_decision_id' => $sanctionDecision->id,
-                        'category_id' => $category_id,
-                        'incident_date' => $request->incident_date[$key],
-                        'comment' => $request->comment[$key] ?? null,
-                        'file' => @$file ?? null,
-                    ]);
-                }
+        if (!$request->has('pelanggaran')) {
+            if ($sanctionDecision->id) {
+                $sanctionDecision->details()->delete();
             }
-
-            // // Hapus detail yang tidak lagi ada di request
-            // $detailIdsToKeep = collect($inputDetailIds)->filter()->toArray(); // pastikan tidak null
-            // dd($detailIdsToKeep, $request->all());
-            // if(!empty($detailIdsToKeep)){
-
-            //     SanctionDecisionDetail::where('sanction_decision_id', $sanctionDecision->id)
-            //         ->whereNotIn('id', $detailIdsToKeep)
-            //         ->delete();
-            // }
-
-            return true;
+            return;
         }
 
-        return false;
+        $keptOrCreatedDetailIds = [];
+
+        foreach ($request->pelanggaran as $key => $item) {
+            $detailData = [
+                'category_id' => $item['category_id'],
+                'incident_date' => $item['incident_date'],
+                'comment' => $item['comment'] ?? null,
+            ];
+
+            if (isset($item['file']) && $item['file']->isValid()) {
+                $filePath = $this->storeImage('pelanggaran', $item['file']);
+                $detailData['file'] = $filePath;
+            }
+            
+            $detail = SanctionDecisionDetail::updateOrCreate(
+                [
+                    'id' => $item['detail_id'] ?? null,
+                    'sanction_decision_id' => $sanctionDecision->id,
+                ],
+                $detailData
+            );
+
+            $keptOrCreatedDetailIds[] = $detail->id;
+        }
+
+        SanctionDecisionDetail::where('sanction_decision_id', $sanctionDecision->id)
+                              ->whereNotIn('id', $keptOrCreatedDetailIds)
+                              ->delete();
     }
 
 }

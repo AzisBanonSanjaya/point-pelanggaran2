@@ -210,4 +210,30 @@ class UserController extends Controller
         return response()->json($jsonData, JsonResponse::HTTP_OK);
     }
 
+    public function fetchDataTableSiswa(Request $request)
+    {
+        $name = $request->input("name");
+        $classRoom = $request->input("classRoom");
+        $jurusan = $request->input("jurusan");
+
+        $students = User::with('classRoom')->whereHas('roles', function($q){
+            $q->where('name', 'User');
+        })->when(!empty($name), function ($q) use ($name) {
+            $q->where('name', 'LIKE', "%{$name}%")->orWhere('username', 'LIKE', "%{$name}%");
+        })->when(!empty($classRoom), function ($q) use ($classRoom) {
+            $q->whereHas('classRoom', function ($q) use ($classRoom) {
+                $q->where('name', $classRoom);
+            });
+        })->when(!empty($jurusan), function ($q) use ($jurusan) {
+           $q->whereHas('classRoom', function ($q) use ($jurusan) {
+                $q->where('major', $jurusan);
+            });
+        })->get();
+
+        return response()->json([
+            'status' => true,
+            'data' => $students,
+        ], JsonResponse::HTTP_OK);
+    }
+
 }

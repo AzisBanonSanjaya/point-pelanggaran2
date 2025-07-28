@@ -23,7 +23,7 @@
                     <div class="col-md-8 mt-2">
                         <div class="d-flex justify-content-end">
                             @can('role-create')
-                                  <button class="btn btn-outline-primary"  data-bs-toggle="modal" data-bs-target="#modal-create">
+                                  <button class="btn btn-primary"  data-bs-toggle="modal" data-bs-target="#modal-create">
                                     <i class="bi bi-plus-circle-fill"></i>  Create Role
                                 </button>
                               @endcan

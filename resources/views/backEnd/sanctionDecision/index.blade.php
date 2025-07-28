@@ -24,13 +24,13 @@
                     <div class="col-md-8 mt-2">
                         <div class="d-flex justify-content-end">
                             {{-- @can('reporting-create')
-                                <button class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#modal-create">
+                                <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modal-create">
                                     <i class="bi bi-plus-circle-fill"></i> Create Pelaporan
                                 </button>
                             @endcan --}}
                             
                              @can('penentuan-sanksi-create')
-                                <a href="{{ route('penentuan-sanksi.create') }}" class="btn btn-outline-primary">
+                                <a href="{{ route('penentuan-sanksi.create') }}" class="btn btn-primary">
                                     <i class="bi bi-plus-circle-fill"></i> Buat Pelanggaran Baru
                                 </a>
                             @endcan
@@ -113,12 +113,8 @@
                                         <span class="badge bg-danger" style="font-size: 11px">BERAT</span>
                                     @endif
                                 </td>
-                                <td>
-                                    @if(in_array($sanction->status, [1,3]))
-                                        <span class="badge bg-secondary" style="font-size: 11px">SANKSI BELUM ADA</span>
-                                    @else
+                                <td>          
                                     {!! $status !!}
-                                    @endif
                                 </td>
                                 <td>{!! $statusSanksi    !!}</td>
                                 <td>{{$sanction->userCreated?->name}}</td>
@@ -199,16 +195,9 @@
         $("#txt-nis").text(response.student.username);
         $("#txt-wali-kelas").text(response.student.class_room.user?.name);
         $("#txt-total-point").text(response.total_point_sum);
-        if(response.status == 1 || response.status == 3){
-            $("#statusWrapper").html(
-                `<span class="badge bg-secondary" style="font-size: 11px">SANKSI BELUM ADA</span>`
-            );
-        }else{
-            $("#statusWrapper").html(
-                response.type_pelanggaran
-            );
-        }
-       
+        $("#statusWrapper").html(
+            response.type_pelanggaran
+        );
         $("#txt-file").html(response.url_file ? `<a href="${response.url_file}" class="btn btn-info btn-sm" target="_blank ">Lihat File</a>` : '-');
         $("#txt-description").text(response.description);
 
@@ -253,16 +242,9 @@
         $(".txt-nis").text(response.student.username);
         $(".txt-wali-kelas").text(response.student.class_room.user?.name);
         $(".txt-total-point").text(response.total_point_sum);
-        
-        if(response.status == 1 || response.status == 3){
-            $(".statusWrapper").html(
-                `<span class="badge bg-secondary" style="font-size: 11px">SANKSI BELUM ADA</span>`
-            );
-        }else{
-            $(".statusWrapper").html(
-                response.type_pelanggaran
-            );
-        }
+        $(".statusWrapper").html(
+            response.type_pelanggaran
+        );
         $('#modal-submit').modal('show');
     });
 

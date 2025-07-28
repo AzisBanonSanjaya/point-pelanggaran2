@@ -52,6 +52,7 @@ Route::middleware(['auth'])->group(function () {
     Route::group(['prefix' => 'datatable'], function(){
         Route::group(['prefix' => 'user_management'], function(){
             Route::get('user', [UserController::class, 'fetchDataTable'])->name('user.fetchDataTable');
+            Route::get('siswa', [UserController::class,'fetchDataTableSiswa'])->name('siswa.fetchDataTable');
         });
     });
 
@@ -67,12 +68,5 @@ Route::middleware(['auth'])->group(function () {
     Route::post('penentuan-sanksi-approve', [ViolationManagementController::class, 'approve'])->name('penentuan-sanksi.approve');
     Route::post('penentuan-sanksi-reject', [ViolationManagementController::class, 'reject'])->name('penentuan-sanksi.reject');
 
-    // Route Manajemen Pelanggaran Siswa (Fitur Guru BK)
-    // Route::group(['prefix' => 'manajemen-pelanggaran', 'middleware' => ['role:guru_bk']], function() {
-        Route::get('/manajemen-pelanggaran', [ViolationManagementController::class, 'index'])->name('manajemen-pelanggaran.index');
-        // Route::get('/{id}', [ViolationManagementController::class, 'show'])->name('manajemen-pelanggaran.show');
-        // Route::post('/{id}/setujui', [ViolationManagementController::class, 'setujui'])->name('manajemen-pelanggaran.setujui');
-        // Route::post('/{id}/kurangi-point', [ViolationManagementController::class, 'kurangiPoint'])->name('manajemen-pelanggaran.kurangi-point');
-    // });
 
 });

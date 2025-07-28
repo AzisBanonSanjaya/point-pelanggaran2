@@ -36,7 +36,7 @@
                             @endcan
 
                             @can('user-create')
-                                <button class="btn btn-outline-primary"  data-bs-toggle="modal" data-bs-target="#modal-create">
+                                <button class="btn btn-primary"  data-bs-toggle="modal" data-bs-target="#modal-create">
                                     <i class="bi bi-plus-circle-fill"></i>  Create User
                                 </button>
                             @endcan
