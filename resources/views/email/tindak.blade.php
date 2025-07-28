@@ -123,13 +123,12 @@
   <div class="container">
     
     <div class="header">
-      <h1>Pengajuan Tindakan Pelanggaran Siswa</h1>
+      <h1>Tindak Pelanggaran Siswa</h1>
     </div>
     <div class="body">
-      @if($data->total_point >= 76)
-         <p>Yth. <strong>Bapak/Ibu Kepala Sekolah,</strong></p>
+    <p>Yth. <strong>Bapak/Ibu Guru,</strong></p>
 
-      <p>Telah diajukan laporan pelanggaran oleh siswa melalui pihak Guru untuk disetujui. Berikut detail pengajuan:</p>
+      <p>Telah ditindak pelanggaran siswa melalui pihak Guru BK Berikut detail Tindakan:</p>
 
       <div class="info-box">
         <ul>
@@ -139,6 +138,7 @@
           <li><strong>Kode Laporan:</strong> {{ $data->code }}</li>
           <li><strong>Tgl Laporan:</strong> {{ $data->report_date }}</li>
           <li><strong>Pelapor:</strong> {{ $data->userCreated?->name }}</li>
+          <li><strong>Deskripsi Tindakan:</strong> {{ $data->description }}</li>
         </ul>
       </div>
 
@@ -166,49 +166,7 @@
             </tbody>
         </table>
       </div>
-      @else
-      <p>Yth. <strong>Bapak/Ibu Guru BK,</strong></p>
-
-      <p>Telah diajukan laporan pelanggaran oleh siswa melalui pihak Guru untuk ditindaklanjuti. Berikut detail pengajuan:</p>
-
-      <div class="info-box">
-        <ul>
-          <li><strong>Nama Siswa:</strong> {{$data->student?->name}}</li>
-          <li><strong>Kelas:</strong> {{$data->student?->classRoom?->code}}</li>
-          <li><strong>Total Poin Pelanggaran:</strong> {{ $data->total_point }} poin</li>
-          <li><strong>Kode Laporan:</strong> {{ $data->code }}</li>
-          <li><strong>Tgl Laporan:</strong> {{ $data->report_date }}</li>
-          <li><strong>Pelapor:</strong> {{ $data->userCreated?->name }}</li>
-        </ul>
-      </div>
-
-      <div>
-        <table>
-            <thead>
-                <tr>
-                    <th>No</th>
-                    <th>Nama Pelanggaran</th>
-                    <th>Tanggal Kejadian</th>
-                    <th>Point</th>
-                    <th>Keterangan</th>
-                </tr>
-            </thead>
-            <tbody id="tbody-pelanggaran">
-               @foreach ($data->sanctionDecisionDetail as $detail)
-                   <tr>
-                        <td>{{$loop->iteration}}</td>
-                        <td>{{$detail->category?->name}}</td>
-                        <td>{{$detail->incident_date}}</td>
-                        <td>{{$detail->category?->point}}</td>
-                        <td>{{$detail->comment}}</td>
-                   </tr>
-               @endforeach
-            </tbody>
-        </table>
-      </div>
-
-      <p>Mohon untuk dilakukan tindakan prosedur Bimbingan Konseling.</p>
-      @endif
+      
       <p style="margin-top: 25px;">
         <a href="{{ route('penentuan-sanksi.index') }}" class="btn">Lihat Pengajuan</a>
       </p>

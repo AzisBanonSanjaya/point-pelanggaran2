@@ -126,15 +126,15 @@
                         $('#phone_number_edit').val(response.data.phone_number);
                         $('#email_edit').val(response.data.email);
                         $('#password_edit').val(response.data.password);
-                        let option_role = "";
+                        let option_role = `<option value="" selected disabled>Pilih Role</option>`;
                         for (let i = 0; i < response.roles.length; i++) {
                             let selected_role = response.roles[i].selected ? "selected='"+response.roles[i].selected+"'" : ""
                             option_role += "<option value='"+response.roles[i].id+"' "+selected_role+">"+response.roles[i].name+"</option>";
                         }
 
-                        let htmlClassRoom = '';
+                        let htmlClassRoom = '<option value="" selected disabled>Pilih Kelas</option>';
                         classRooms.forEach(classRoom => {
-                        htmlClassRoom += `<option value="${classRoom.id}" ${classRoom.selected}>${classRoom.code}</option>`;
+                            htmlClassRoom += `<option value="${classRoom.id}" ${classRoom.selected}>${classRoom.code}</option>`;
                         });
                         $('#role_id_edit').html(option_role);
                         $('#class_room_id_edit').html(htmlClassRoom);

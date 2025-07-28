@@ -19,6 +19,7 @@ return new class extends Migration
             $table->unsignedBigInteger('category_id');
             $table->date('incident_date');
             $table->text('comment')->nullable();
+            $table->text('file')->nullable();
             $table->timestamps();
         });
     }

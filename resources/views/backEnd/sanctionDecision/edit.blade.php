@@ -61,8 +61,9 @@
                                                 <th>No</th>
                                                 <th>Nama Pelanggaran</th>
                                                 <th>Tanggal Kejadian</th>
-                                                <th>Point</th>
                                                 <th>Keterangan</th>
+                                                <th>Bukti</th>
+                                                <th>Point</th>
                                                 <th>Action</th>
                                             </tr>
                                         </thead>
@@ -75,9 +76,11 @@
                                                 <td>{{ $key + 1 }}</td>
                                                 <td>{{ $detail->category->name }}</td>
                                                 <td>{{ date('d/m/Y', strtotime($detail->incident_date)) }}</td>
-                                                <td>{{ $detail->category->point }}</td>
                                                 <td>{{ $detail->comment }}</td>
+                                                <td><input type="file" class="form-control" name="file[{{ $key+1 }}]"></td>
+                                                <td>{{ $detail->category->point }}</td>
                                                 <td>
+                                                    <input type="hidden" name="detail_id[{{ $key + 1 }}]" value="{{ $detail->id }}">
                                                     <input type="hidden" name="sanction_decision_id[{{ $key + 1 }}]" value="{{ $detail->sanction_decision_id }}">
                                                     <input type="hidden" name="category_id[{{ $key + 1 }}]" value="{{ $detail->category->id }}">
                                                     <input type="hidden" name="incident_date[{{ $key + 1 }}]" value="{{ $detail->incident_date }}">
@@ -93,7 +96,7 @@
                                         </tbody>
                                         <tfoot>
                                             <tr>
-                                                <th colspan="3" style="text-align: right;">Total Point</th>
+                                                <th colspan="5" style="text-align: right;">Total Point</th>
                                                 <th id="total-point"><input type="hidden" name="total_point" value="{{$totalPoint}}">{{$totalPoint}}</th>
                                                 <th></th>
                                             </tr>
@@ -134,12 +137,13 @@
             let index = row.find("td:eq(0)").text(); // Get the existing 'No'
             let valuePelanggaran = row.find("input[name^='category_id']").val();
             let sanctionDetailId = row.find("input[name^='sanction_decision_id']").val();
+            let detailId = row.find("input[name^='detail_id']").val();
             let namePelanggaran = row.find("td:eq(1)").text();
-            let pointPelanggaran = row.find("td:eq(3)").text();
+            let pointPelanggaran = row.find("td:eq(5)").text();
             let valueIncidentDate = row.find("input[name^='incident_date']").val();
             let comment = row.find("input[name^='comment']").val();
 
-            let newItem = {sanctionDetailId, valuePelanggaran,pointPelanggaran, namePelanggaran, valueIncidentDate, comment, isExisting: true, originalIndex: index};
+            let newItem = {sanctionDetailId, detailId, valuePelanggaran,pointPelanggaran, namePelanggaran, valueIncidentDate, comment, isExisting: true, originalIndex: index};
             items.push(newItem);
         });
         $("#btn-add-pelanggaran").on("click", function(e){
@@ -221,8 +225,9 @@
                 html += `<td>${index + 1}</td>`;
                 html += `<td>${item.namePelanggaran}</td>`;
                 html += `<td>${item.valueIncidentDate}</td>`;
-                html += `<td>${item.pointPelanggaran}</td>`;
                 html += `<td>${item.comment}</td>`;
+                html += `<td><input type="file" class="form-control" name="file[${index}]"></td>`;
+                html += `<td>${item.pointPelanggaran}</td>`;
                 html += `<td>
                             <input type="hidden" name="category_id[${index+1}]" value="${item.valuePelanggaran}">
                             <input type="hidden" name="incident_date[${index+1}]" value="${item.valueIncidentDate}">
@@ -233,7 +238,9 @@
                         // If it's an existing item, keep the original delete button
                         let deleteUrl = $("#tbody-pelanggaran tr").eq(index).find(".delete").data('url');
                         let detailId = deleteUrl.split('/').pop();
-                        html += ` <input type="hidden" name="sanction_decision_id[${index+1}]" value="${item.sanctionDetailId}"> <a href="javascript:void(0)" class="btn btn-danger btn-sm delete" data-url="{{ route('penentuan-sanksi.deleteDetail', '') }}/${detailId}"><i class="bi bi-trash"></i></a>`;
+                        html += ` <input type="hidden" name="sanction_decision_id[${index+1}]" value="${item.sanctionDetailId}"> 
+                                <input type="hidden" name="detail_id[${index+1}]" value="${item.detailId}"> 
+                                <a href="javascript:void(0)" class="btn btn-danger btn-sm delete" data-url="{{ route('penentuan-sanksi.deleteDetail', '') }}/${detailId}"><i class="bi bi-trash"></i></a>`;
                     }
                 html +=`</td>`;
                 html += '</tr>';

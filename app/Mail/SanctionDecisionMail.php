@@ -9,7 +9,7 @@ use Illuminate\Mail\Mailables\Content;
 use Illuminate\Mail\Mailables\Envelope;
 use Illuminate\Queue\SerializesModels;
 
-class ApproveMail extends Mailable
+class SanctionDecisionMail extends Mailable
 {
     use Queueable, SerializesModels;
 
@@ -25,15 +25,10 @@ class ApproveMail extends Mailable
         $this->data = $data;
     }
 
-    /**
-     * Get the message envelope.
-     *
-     * @return \Illuminate\Mail\Mailables\Envelope
-     */
-    public function envelope()
+     public function envelope()
     {
         return new Envelope(
-            subject: 'Notifikasi Persetujuan Pelanggaran Siswa',
+            subject: 'Notifikai Pengajuan Pelanggaran Siswa',
         );
     }
 
@@ -44,8 +39,8 @@ class ApproveMail extends Mailable
      */
     public function content()
     {
-        return new Content(
-            view: 'email.approve_bk',
+       return new Content(
+            view: 'email.pengajuan_ke_bk',
             with: ['data' => $this->data]
         );
     }

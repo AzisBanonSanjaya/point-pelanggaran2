@@ -17,10 +17,9 @@ class ViolationManagementController extends Controller
      */
     public function index(Request $request)
     {
-       $sanctions = SanctionDecision::select('user_id', 'status', 'code', 'id', 'file','description','reason_reject', DB::raw('SUM(total_point) as total_point_sum'))
-        ->with('student.classRoom.user', 'sanctionDecisionDetail.category')
-        ->whereIn('status', [2,3,4])
-        ->groupBy('user_id', 'code', 'id', 'status','file','description','reason_reject')
+       $sanctions = SanctionDecision::select('user_id', 'status', 'code', 'id', 'file','description','created_by','reason_reject', DB::raw('SUM(total_point) as total_point_sum'))
+        ->with('student.classRoom.user', 'sanctionDecisionDetail.category','userCreated')
+        ->groupBy('user_id', 'code', 'id', 'status','file','description','reason_reject','created_by')
         ->orderByDesc('total_point_sum')
         ->get();
         return view('backEnd.violationManagement.index', compact('sanctions'));
@@ -41,7 +40,7 @@ class ViolationManagementController extends Controller
 
             // Handle file upload jika ada
             $sanctionDecision->update([
-                'status' => 3
+                'status' => 1
             ]);
 
             DB::commit();

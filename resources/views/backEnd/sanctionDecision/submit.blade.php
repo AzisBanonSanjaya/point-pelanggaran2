@@ -49,13 +49,13 @@
                     <div class="col-lg-12">
                         <hr>
                         <div class="form-group">
-                            <label class="form-label">Bukti Pelanggaran</label>
-                            <input type="file" name="file" id="file" class="form-control" required>
+                            <label class="form-label">Bukti Tindakan</label>
+                            <input type="file" name="file" id="file" class="form-control">
                         </div>
                     </div>
                     <div class="col-lg-12">
                         <div class="form-group">
-                            <label class="form-label">Keterangan Lainnya</label>
+                            <label class="form-label">Keterangan Tindakan</label>
                             <textarea name="description" id="description" class="form-control" rows="7" placeholder="Masukan Keterangan Lainnya"></textarea>
                         </div>
                     </div>
@@ -63,7 +63,7 @@
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                <button type="submit" class="btn btn-success">Kirim</button>
+                <button type="submit" class="btn btn-success">Verifikasi</button>
             </div>
         </form>
         

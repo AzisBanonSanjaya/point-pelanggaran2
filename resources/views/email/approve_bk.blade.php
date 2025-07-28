@@ -123,18 +123,21 @@
 
   <div class="container">
     <div class="header">
-      <h1>Notifikasi Pelanggaran Siswa</h1>
+      <h1>Notifikasi Persetujuan Pelanggaran Siswa</h1>
     </div>
     <div class="body">
-      <p>Yth. <strong> {{$data->student?->name}}</strong>,</p>
+      <p>Yth. <strong>Bapak/Ibu Guru,</strong></p>
 
-      <p>Kami informasikan bahwa Anda telah tercatat melakukan pelanggaran di lingkungan sekolah. Berikut detail pelanggaran tersebut:</p>
+     <p>Telah disetujui pelanggaran siswa melalui pihak Kepala Sekolah. Berikut detail pelanggaran:</p>
 
       <div class="info-box">
         <ul>
-        <li><strong>Total Poin Pelanggaran:</strong> {{ $data->total_point }} poin</li>
+          <li><strong>Nama Siswa:</strong> {{$data->student?->name}}</li>
+          <li><strong>Kelas:</strong> {{$data->student?->classRoom?->code}}</li>
+          <li><strong>Total Poin Pelanggaran:</strong> {{ $data->total_point }} poin</li>
           <li><strong>Kode Laporan:</strong> {{ $data->code }}</li>
           <li><strong>Tgl Laporan:</strong> {{ $data->report_date }}</li>
+          <li><strong>Pelapor:</strong> {{ $data->userCreated?->name }}</li>
         </ul>
       </div>
 
@@ -162,8 +165,6 @@
             </tbody>
         </table>
       </div>
-
-      <p>Segera lakukan klarifikasi atau konfirmasi ke ruang BK untuk penanganan lebih lanjut. Klik tombol di bawah ini untuk melihat detail lengkap pelanggaran Anda.</p>
 
       <p style="margin-top: 25px;">
         <a href="{{ route('penentuan-sanksi.index') }}" class="btn">Lihat Pengajuan</a>

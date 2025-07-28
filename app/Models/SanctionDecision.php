@@ -37,10 +37,15 @@ class SanctionDecision extends Model
         return $this->hasMany(SanctionDecisionDetail::class);
     }
 
-     public function student(): BelongsTo
+    public function student(): BelongsTo
     {
         return $this->belongsTo(User::class, 'user_id')->whereHas('roles', function ($query) {
                         $query->where('name', 'User');
                     });;
+    }
+
+    public function userCreated(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'created_by');
     }
 }

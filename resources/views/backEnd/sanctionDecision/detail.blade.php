@@ -40,11 +40,11 @@
                                 <td id="txt-wali-kelas"></td>
                             </tr>
                             <tr>
-                               <th>Bukti Pelanggaran</th>
+                               <th>Bukti Tindakan</th>
                                 <td id="txt-file"></td>
                             </tr>
                             <tr>
-                                <th>Deskripsi Lainnya</th>
+                                <th>Deskripsi Tindakan</th>
                                 <td id="txt-description"></td>
                             </tr>
                             <tr id="wrapper-reject">
@@ -66,6 +66,7 @@
                                     <th>Nama Pelanggaran</th>
                                     <th>Tanggal Kejadian</th>
                                     <th>Point</th>
+                                    <th>Bukti</th>
                                     <th>Keterangan</th>
                                 </tr>
                             </thead>

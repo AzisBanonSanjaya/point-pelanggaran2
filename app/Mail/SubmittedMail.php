@@ -33,7 +33,7 @@ class SubmittedMail extends Mailable
     public function envelope()
     {
         return new Envelope(
-            subject: 'Notifikai Pengajuan Tindakan Pelanggaran Siswa',
+            subject: 'Notifikai Tindakan Pelanggaran Siswa',
         );
     }
 
@@ -45,7 +45,7 @@ class SubmittedMail extends Mailable
     public function content()
     {
         return new Content(
-            view: 'email.pengajuan_ke_bk',
+            view: 'email.tindak',
             with: ['data' => $this->data]
         );
     }

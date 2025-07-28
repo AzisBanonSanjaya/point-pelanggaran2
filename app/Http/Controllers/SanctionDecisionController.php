@@ -33,9 +33,9 @@ class SanctionDecisionController extends Controller
      */
     public function index(): Factory|View
     {
-        $sanctions = SanctionDecision::select('user_id', 'status', 'code', 'id', 'file','description', 'reason_reject', DB::raw('SUM(total_point) as total_point_sum'))
-        ->with('student.classRoom.user', 'sanctionDecisionDetail.category')
-        ->groupBy('user_id', 'code', 'id', 'status','file','description','reason_reject')
+        $sanctions = SanctionDecision::select('user_id', 'status', 'code', 'id', 'file','description', 'created_by', 'reason_reject', DB::raw('SUM(total_point) as total_point_sum'))
+        ->with('student.classRoom.user', 'sanctionDecisionDetail.category','userCreated')
+        ->groupBy('user_id', 'code', 'id', 'status','file','description','created_by','reason_reject')
         ->orderByDesc('total_point_sum')
         ->get();
         
@@ -158,7 +158,7 @@ class SanctionDecisionController extends Controller
                 $file = $request->file('file');
                 $filePath = $file->store('sanksi', 'public');
             } else {
-                $filePath = $sanctionDecision->file;
+                $filePath = null;
             }
 
             $sanctionDecision->update([

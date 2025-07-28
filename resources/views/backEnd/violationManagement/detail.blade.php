@@ -40,11 +40,11 @@
                                 <td id="txt-wali-kelas"></td>
                             </tr>
                             <tr>
-                               <th>Bukti Pelanggaran</th>
+                               <th>Bukti Tindakan</th>
                                 <td id="txt-file"></td>
                             </tr>
                             <tr>
-                                <th>Deskripsi Lainnya</th>
+                                <th>Deskripsi Tindakan</th>
                                 <td id="txt-description"></td>
                             </tr>
                              <tr id="wrapper-reject">
@@ -66,6 +66,7 @@
                                     <th>Nama Pelanggaran</th>
                                     <th>Tanggal Kejadian</th>
                                     <th>Point</th>
+                                    <th>Bukti</th>
                                     <th>Keterangan</th>
                                 </tr>
                             </thead>
@@ -81,8 +82,7 @@
         </div>
         <div class="modal-footer">
             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-            <button type="button" class="btn btn-danger" id="btn-reject">Reject Sanksi</button>
-            <button type="button" class="btn btn-success" id="btn-approve">Approve Sanksi</button>
+            <button type="button" class="btn btn-success" id="btn-approve">Setujui Pelanggaran</button>
         </div>
     </div>
   </div>

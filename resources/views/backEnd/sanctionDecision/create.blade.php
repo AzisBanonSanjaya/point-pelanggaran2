@@ -66,15 +66,16 @@
                                                 <th>No</th>
                                                 <th>Nama Pelanggaran</th>
                                                 <th>Tanggal Kejadian</th>
-                                                <th>Point</th>
                                                 <th>Keterangan</th>
+                                                <th>Bukti</th>
+                                                <th>Point</th>
                                                 <th>Action</th>
                                             </tr>
                                         </thead>
                                         <tbody id="tbody-pelanggaran"></tbody>
                                         <tfoot>
                                             <tr>
-                                                <th colspan="3" style="text-align: right;">Total Point</th>
+                                                <th colspan="5" style="text-align: right;">Total Point</th>
                                                 <th id="total-point"></th>
                                                 <th></th>
                                             </tr>
@@ -196,8 +197,9 @@
                 html += `<td>${index + 1}</td>`;
                 html += `<td>${item.namePelanggaran}</td>`;
                 html += `<td>${item.valueIncidentDate}</td>`;
-                html += `<td>${item.pointPelanggaran}</td>`;
                 html += `<td>${item.comment}</td>`;
+                html += `<td><input type="file" class="form-control" name="file[${index}]"></td>`;
+                html += `<td>${item.pointPelanggaran}</td>`;
                 html += `<td>
                             <input type="hidden" name="category_id[${index+1}]" value="${item.valuePelanggaran}">
                             <input type="hidden" name="incident_date[${index+1}]" value="${item.valueIncidentDate}">

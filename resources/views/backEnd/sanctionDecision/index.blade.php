@@ -29,9 +29,11 @@
                                 </button>
                             @endcan --}}
                             
+                             @can('penentuan-sanksi-create')
                                 <a href="{{ route('penentuan-sanksi.create') }}" class="btn btn-outline-primary">
-                                    <i class="bi bi-plus-circle-fill"></i> Create Penentuan Sanksi
+                                    <i class="bi bi-plus-circle-fill"></i> Buat Pelanggaran Baru
                                 </a>
+                            @endcan
                             
                         </div>
                     </div>
@@ -42,12 +44,13 @@
                         <thead>
                             <tr>
                                 <th>#</th>
-                                <th>Code Pelaporan</th>
                                 <th>Nama Siswa</th>
                                 <th>Kelas</th>
                                 <th>Total Point</th>
+                                <th>Urgensi</th>
                                 <th>Sanksi</th>
                                 <th>Status</th>
+                                <th>Pelapor</th>
                                 <th>Action</th>
                             </tr>
                         </thead>
@@ -77,48 +80,64 @@
                                         $status = '<span class="badge bg-info text-dark" style="font-size: 11px"><i class="bi bi-exclamation-octagon me-1"></i> '.$from.' '.$to.' '.$matchedInterval->name. '</span>';
 
                                     } elseif ($matchedInterval->type === 'Sedang') {
-                                         $status = '<span class="badge bg-warning" style="font-size: 11px"><i class="bi bi-exclamation-octagon me-1"></i> '.$from.' '.$to.' '.$matchedInterval->name. '</span>';
+                                         $status = '<span class="badge bg-warning text-dark" style="font-size: 11px"><i class="bi bi-exclamation-octagon me-1"></i> '.$from.' '.$to.' '.$matchedInterval->name. '</span>';
                                     } elseif ($matchedInterval->type === 'Berat') {
                                         $status = '<span class="badge bg-danger" style="font-size: 11px"><i class="bi bi-exclamation-octagon me-1"></i> '.$from.' '.$to.' '.$matchedInterval->name. '</span>';
                                     }
                                 }
 
-                                if($sanction->status == 1){
-                                    $statusSanksi = '<span class="badge bg-warning" style="font-size: 11px">Sanksi Belum Diajukan</span>';
-                                }elseif($sanction->status == 2){
-                                    $statusSanksi = '<span class="badge bg-info" style="font-size: 11px">Sanksi Sudah Diajukan</span>';
-                                }elseif($sanction->status == 3){
-                                    $statusSanksi = '<span class="badge bg-success" style="font-size: 11px">Sanksi Sudah Diapprove</span>';
-                                }elseif($sanction->status == 4){
-                                    $statusSanksi = '<span class="badge bg-danger" style="font-size: 11px">Sanksi Ditolak Guru BK</span>';
-                                }
-
+                                // if(!Auth::user()->hasRole('Guru Bk')){
+                                    if($sanction->status == 1){
+                                        $statusSanksi = '<span class="badge bg-info" style="font-size: 11px">Menunggu Tindakan</span>';
+                                    }elseif($sanction->status == 2){
+                                        $statusSanksi = '<span class="badge bg-success" style="font-size: 11px">Selesai Ditindak</span>';
+                                    }elseif($sanction->status == 3){
+                                        $statusSanksi = '<span class="badge bg-warning text-dark" style="font-size: 11px">Menunggu Persetujuan Kepala Sekolah</span>';
+                                    }elseif($sanction->status == 4){
+                                        $statusSanksi = '<span class="badge bg-danger" style="font-size: 11px">Sanksi Ditolak Guru BK</span>';
+                                    }
                                 $sanction->type_pelanggaran = $status;
                                 $sanction->url_file = $url_file;
                             @endphp
                             <tr>
                                 <td>{{ $loop->iteration }}</td>
-                                <td>{{ $sanction->code }}</td>
                                 <td>{{ $sanction->student->name}}</td>
                                 <td>{{ $sanction->student->classRoom->code}}</td>
                                 <td>{{ $sanction->total_point_sum }}</td>
-                                <td>{!! $status !!}</td>
+                                <td>
+                                     @if ($matchedInterval->type === 'Ringan') 
+                                        <span class="badge bg-info" style="font-size: 11px">RINGAN</span>
+                                    @elseif ($matchedInterval->type === 'Sedang') 
+                                            <span class="badge bg-warning text-dark" style="font-size: 11px"> SEDANG</span>
+                                    @elseif ($matchedInterval->type === 'Berat') 
+                                        <span class="badge bg-danger" style="font-size: 11px">BERAT</span>
+                                    @endif
+                                </td>
+                                <td>
+                                    @if(in_array($sanction->status, [1,3]))
+                                        <span class="badge bg-secondary" style="font-size: 11px">SANKSI BELUM ADA</span>
+                                    @else
+                                    {!! $status !!}
+                                    @endif
+                                </td>
                                 <td>{!! $statusSanksi    !!}</td>
+                                <td>{{$sanction->userCreated?->name}}</td>
                                 <td>
                                     <div class="dropdown">
                                         <button class="btn btn-secondary btn-sm dropdown-toggle" type="button" data-bs-toggle="dropdown">
                                             <i class="bi bi-gear-fill"></i>
                                         </button>
                                         <div class="dropdown-menu">
-                                            {{-- @can('reporting-edit') --}}
+                                            @can('penentuan-sanksi-edit')
                                             @if($sanction->status != 3)
                                             <a class="dropdown-item edit" href="{{ route('penentuan-sanksi.edit', $sanction->id) }}">
-                                                <i class="bi bi-pencil-fill"></i> Edit
+                                                <i class="bi bi-plus"></i> Tambah Pelanggaran
                                             </a>
                                              @endif
-                                            @if($sanction->status == 1)
+                                             @endcan
+                                            @if($sanction->status == 1 && Auth::user()->hasRole('Guru Bk'))
                                             <a class="dropdown-item submit" href="javascript:void(0)" data-url="{{ route('penentuan-sanksi.submitted', $sanction->id) }}" data-sanction='@json($sanction)'>
-                                                <i class="bi bi-check"></i> Ajukan Sanksi
+                                                <i class="bi bi-check"></i> Tindak Sanksi
                                             </a>
                                             @endif
                                             <a class="dropdown-item detail" href="javascript:void(0)" data-sanction='@json($sanction)'>
@@ -178,9 +197,18 @@
         $("#txt-siswa").text(response.student.name);
         $("#txt-kelas").text(response.student.class_room.code);
         $("#txt-nis").text(response.student.username);
-        $("#txt-wali-kelas").text(response.student.class_room.user.name);
+        $("#txt-wali-kelas").text(response.student.class_room.user?.name);
         $("#txt-total-point").text(response.total_point_sum);
-        $("#statusWrapper").html(response.type_pelanggaran);
+        if(response.status == 1 || response.status == 3){
+            $("#statusWrapper").html(
+                `<span class="badge bg-secondary" style="font-size: 11px">SANKSI BELUM ADA</span>`
+            );
+        }else{
+            $("#statusWrapper").html(
+                response.type_pelanggaran
+            );
+        }
+       
         $("#txt-file").html(response.url_file ? `<a href="${response.url_file}" class="btn btn-info btn-sm" target="_blank ">Lihat File</a>` : '-');
         $("#txt-description").text(response.description);
 
@@ -201,6 +229,11 @@
                 html += `<td>${item.category.name}</td>`;
                 html += `<td>${item.incident_date}</td>`;
                 html += `<td>${item.category.point}</td>`;
+                if(item.file){
+                    html += `<td><button type="button" class="btn btn-sm btn-info" onclick="onFile('${item.file_url}')"><i class="bi bi-image me-2"></i>Lihat File</button></td>`;
+                }else{
+                    html += `<td>TIDAK ADA</td>`;
+                }
                 html += `<td>${item.comment ?? '-'}</td>`;
                 html += `</tr>`;
             });
@@ -221,7 +254,15 @@
         $(".txt-wali-kelas").text(response.student.class_room.user?.name);
         $(".txt-total-point").text(response.total_point_sum);
         
-        $(".statusWrapper").html(response.type_pelanggaran);
+        if(response.status == 1 || response.status == 3){
+            $(".statusWrapper").html(
+                `<span class="badge bg-secondary" style="font-size: 11px">SANKSI BELUM ADA</span>`
+            );
+        }else{
+            $(".statusWrapper").html(
+                response.type_pelanggaran
+            );
+        }
         $('#modal-submit').modal('show');
     });
 
@@ -255,5 +296,12 @@
             }
         });
     });
+
+    function onFile(file){
+        Swal.fire({
+            imageUrl: file,
+            imageAlt: "File"
+        });
+    }
 </script>
 @endpush
