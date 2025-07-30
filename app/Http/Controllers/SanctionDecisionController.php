@@ -168,7 +168,7 @@ class SanctionDecisionController extends Controller
             ]);
 
             DB::commit();
-            Mail::to('azisbanon01@gmail.com')->send(new SubmittedMail($sanctionDecision));
+            // Mail::to('azisbanon01@gmail.com')->send(new SubmittedMail($sanctionDecision));
             return redirect()->back()->with('success', 'Data berhasil diperbarui.');
         } catch (\Exception $e) {
             DB::rollback();

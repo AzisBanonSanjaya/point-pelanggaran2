@@ -18,10 +18,22 @@ class CategoryService
         DB::beginTransaction();
         try {
             $data = $request->validated();
+
+            $categoryData = $request->except('rekomendasi');
+            $rekomendasiList = $data['rekomendasi'];
+
             if ($category) {
-                $category->update($data);
+                $category->update($categoryData);
+                $category->recomendation()->delete();
             } else {
-                $category = Category::create($data);
+                $category = Category::create($categoryData);
+            }
+
+            foreach ($rekomendasiList as $rekomendasiName) {
+                $category->recomendation()->create([
+                    'name' => $rekomendasiName,
+                    'created_by' => Auth::id(),
+                ]);
             }
            
             DB::commit();

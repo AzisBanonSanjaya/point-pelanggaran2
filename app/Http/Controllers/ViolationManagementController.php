@@ -44,7 +44,7 @@ class ViolationManagementController extends Controller
             ]);
 
             DB::commit();
-            Mail::to('azisbanon01@gmail.com')->send(new ApproveMail($sanctionDecision));
+            // Mail::to('azisbanon01@gmail.com')->send(new ApproveMail($sanctionDecision));
             return response()->json([
                 'status' => true,
             ]);
@@ -75,7 +75,7 @@ class ViolationManagementController extends Controller
             ]);
 
             DB::commit();
-            Mail::to('azisbanon01@gmail.com')->send(new RejectMail($sanctionDecision));
+            // Mail::to('azisbanon01@gmail.com')->send(new RejectMail($sanctionDecision));
             return response()->json([
                 'status' => true,
             ]);

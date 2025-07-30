@@ -30,7 +30,7 @@ class CategoryController extends Controller
      */
     public function index(): Factory|View
     {
-        $categories = Category::orderBy('id')->get();
+        $categories = Category::orderByDesc('id')->get();
         return view('backEnd.masterData.category.index', compact('categories'));
     }
 
@@ -60,11 +60,12 @@ class CategoryController extends Controller
             ], JsonResponse::HTTP_OK);
         }
 
+        $rekomendasi = $category->recomendation;
        
         return response()->json([
             'status'  => true,
             'message' => 'Data Berhasil',
-            'data'  => $category,
+            'data'  => ['category' => $category, 'rekomendasi' => $rekomendasi],
         ], JsonResponse::HTTP_OK);
     }
 

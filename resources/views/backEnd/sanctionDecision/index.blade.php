@@ -48,7 +48,7 @@
                                 <th>Kelas</th>
                                 <th>Total Point</th>
                                 <th>Urgensi</th>
-                                <th>Sanksi</th>
+                                <th>Rekomendasi Tindakan</th>
                                 <th>Status</th>
                                 <th>Pelapor</th>
                                 <th>Action</th>
@@ -77,22 +77,22 @@
                                    $from = $matchedInterval->from >= 110 ? '>= '.$matchedInterval->from: $matchedInterval->from;
                                    $to = $matchedInterval->from >= 110 ? '' : 's.d. '.$matchedInterval->to;
                                     if ($matchedInterval->type === 'Ringan') {
-                                        $status = '<span class="badge bg-info text-dark" style="font-size: 11px"><i class="bi bi-exclamation-octagon me-1"></i> '.$from.' '.$to.' '.$matchedInterval->name. '</span>';
+                                        $status = '<span class="badge bg-primary text-white" style="font-size: 11px"><i class="bi bi-exclamation-octagon me-1"></i> '.$from.' '.$to.' '.$matchedInterval->name. '</span>';
 
                                     } elseif ($matchedInterval->type === 'Sedang') {
                                          $status = '<span class="badge bg-warning text-dark" style="font-size: 11px"><i class="bi bi-exclamation-octagon me-1"></i> '.$from.' '.$to.' '.$matchedInterval->name. '</span>';
                                     } elseif ($matchedInterval->type === 'Berat') {
-                                        $status = '<span class="badge bg-danger" style="font-size: 11px"><i class="bi bi-exclamation-octagon me-1"></i> '.$from.' '.$to.' '.$matchedInterval->name. '</span>';
+                                        $status = '<span class="badge bg-danger" style="font-size: 11px"><i class="bi bi-exclamation-octagon me-1"></i> >'.$from.' '.$matchedInterval->name. '</span>';
                                     }
                                 }
 
                                 // if(!Auth::user()->hasRole('Guru Bk')){
                                     if($sanction->status == 1){
-                                        $statusSanksi = '<span class="badge bg-info" style="font-size: 11px">Menunggu Tindakan</span>';
+                                        $statusSanksi = '<span class="badge bg-primary" style="font-size: 11px">Menunggu Tindakan</span>';
                                     }elseif($sanction->status == 2){
                                         $statusSanksi = '<span class="badge bg-success" style="font-size: 11px">Selesai Ditindak</span>';
                                     }elseif($sanction->status == 3){
-                                        $statusSanksi = '<span class="badge bg-warning text-dark" style="font-size: 11px">Menunggu Persetujuan Kepala Sekolah</span>';
+                                        $statusSanksi = '<span class="badge bg-warning text-dark" style="font-size: 11px">Menunggu Tindakan Kepala Sekolah</span>';
                                     }elseif($sanction->status == 4){
                                         $statusSanksi = '<span class="badge bg-danger" style="font-size: 11px">Sanksi Ditolak Guru BK</span>';
                                     }
@@ -106,7 +106,7 @@
                                 <td>{{ $sanction->total_point_sum }}</td>
                                 <td>
                                      @if ($matchedInterval->type === 'Ringan') 
-                                        <span class="badge bg-info" style="font-size: 11px">RINGAN</span>
+                                        <span class="badge bg-primary" style="font-size: 11px">RINGAN</span>
                                     @elseif ($matchedInterval->type === 'Sedang') 
                                             <span class="badge bg-warning text-dark" style="font-size: 11px"> SEDANG</span>
                                     @elseif ($matchedInterval->type === 'Berat') 
@@ -125,16 +125,23 @@
                                         </button>
                                         <div class="dropdown-menu">
                                             @can('penentuan-sanksi-edit')
-                                            @if($sanction->status != 3)
-                                            <a class="dropdown-item edit" href="{{ route('penentuan-sanksi.edit', $sanction->id) }}">
-                                                <i class="bi bi-plus"></i> Tambah Pelanggaran
-                                            </a>
-                                             @endif
-                                             @endcan
-                                            @if($sanction->status == 1 && Auth::user()->hasRole('Guru Bk'))
-                                            <a class="dropdown-item submit" href="javascript:void(0)" data-url="{{ route('penentuan-sanksi.submitted', $sanction->id) }}" data-sanction='@json($sanction)'>
-                                                <i class="bi bi-check"></i> Tindak Sanksi
-                                            </a>
+                                                @if(Auth::user()->hasRole('Teacher'))
+                                                    <a class="dropdown-item edit" href="{{ route('penentuan-sanksi.edit', $sanction->id) }}">
+                                                        <i class="bi bi-plus"></i> Tambah Pelanggaran
+                                                    </a>
+                                                @endif
+                                            @endcan
+                                            @if(in_array($sanction->status, [1,3]))
+                                                @if (Auth::user()->hasRole('Kepala Sekolah') && $matchedInterval->type == 'Berat')
+                                                    <a class="dropdown-item submit" href="javascript:void(0)" data-url="{{ route('penentuan-sanksi.submitted', $sanction->id) }}" data-sanction='@json($sanction)'>
+                                                        <i class="bi bi-check"></i> Tindak Sanksi
+                                                    </a>
+                                                @elseif(Auth::user()->hasRole('Guru Bk') && $matchedInterval->type != 'Berat')
+
+                                                <a class="dropdown-item submit" href="javascript:void(0)" data-url="{{ route('penentuan-sanksi.submitted', $sanction->id) }}" data-sanction='@json($sanction)'>
+                                                    <i class="bi bi-check"></i> Tindak Sanksi
+                                                </a>
+                                                @endif
                                             @endif
                                             <a class="dropdown-item detail" href="javascript:void(0)" data-sanction='@json($sanction)'>
                                                 <i class="bi bi-search"></i> Detail
@@ -211,6 +218,7 @@
         }
 
         if(response.sanction_decision_detail.length > 0){
+            console.log(response.sanction_decision_detail);
             let html = "";
             response.sanction_decision_detail.forEach(function(item, index) {
                 html += `<tr>`;
@@ -224,6 +232,7 @@
                     html += `<td>TIDAK ADA</td>`;
                 }
                 html += `<td>${item.comment ?? '-'}</td>`;
+                html += `<td>${item.category.formatted_rekomendasi ?? '-'}</td>`;
                 html += `</tr>`;
             });
             $("#tbody-pelanggaran").html(html)

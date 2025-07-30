@@ -68,6 +68,7 @@
                                     <th>Point</th>
                                     <th>Bukti</th>
                                     <th>Keterangan</th>
+                                    <th>Rekomendasi Sanksi</th>
                                 </tr>
                             </thead>
                             <tbody id="tbody-pelanggaran">

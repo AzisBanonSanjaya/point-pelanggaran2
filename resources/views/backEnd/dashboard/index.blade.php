@@ -115,7 +115,7 @@
                             <th>Kelas</th>
                             <th>Total Point</th>
                             <th>Urgensi</th>
-                            <th>Sanksi</th>
+                            <th>Rekomendasi Tindakan</th>
                             <th>Status</th>
                             <th>Pelapor</th>
                         </tr>
@@ -143,7 +143,7 @@
                                $from = $matchedInterval->from >= 110 ? '>= '.$matchedInterval->from: $matchedInterval->from;
                                $to = $matchedInterval->from >= 110 ? '' : 's.d. '.$matchedInterval->to;
                                 if ($matchedInterval->type === 'Ringan') {
-                                    $status = '<span class="badge bg-info text-dark" style="font-size: 11px"><i class="bi bi-exclamation-octagon me-1"></i> '.$from.' '.$to.' '.$matchedInterval->name. '</span>';
+                                    $status = '<span class="badge bg-primary" style="font-size: 11px"><i class="bi bi-exclamation-octagon me-1"></i> '.$from.' '.$to.' '.$matchedInterval->name. '</span>';
                                 } elseif ($matchedInterval->type === 'Sedang') {
                                      $status = '<span class="badge bg-warning text-dark" style="font-size: 11px"><i class="bi bi-exclamation-octagon me-1"></i> '.$from.' '.$to.' '.$matchedInterval->name. '</span>';
                                 } elseif ($matchedInterval->type === 'Berat') {
@@ -152,7 +152,7 @@
                             }
 
                             if($sanction->status == 1){
-                                $statusSanksi = '<span class="badge bg-info" style="font-size: 11px">Menunggu Tindakan</span>';
+                                $statusSanksi = '<span class="badge bg-primary" style="font-size: 11px">Menunggu Tindakan</span>';
                             }elseif($sanction->status == 2){
                                 $statusSanksi = '<span class="badge bg-success" style="font-size: 11px">Selesai Ditindak</span>';
                             }elseif($sanction->status == 3){
@@ -170,7 +170,7 @@
                             <td>{{ $sanction->total_point_sum }}</td>
                             <td>
                                  @if ($matchedInterval->type === 'Ringan') 
-                                    <span class="badge bg-info" style="font-size: 11px">RINGAN</span>
+                                    <span class="badge bg-primary" style="font-size: 11px">RINGAN</span>
                                 @elseif ($matchedInterval->type === 'Sedang') 
                                         <span class="badge bg-warning text-dark" style="font-size: 11px"> SEDANG</span>
                                 @elseif ($matchedInterval->type === 'Berat') 
@@ -178,11 +178,9 @@
                                 @endif
                             </td>
                             <td>
-                                @if(in_array($sanction->status, [1,3]))
-                                    <span class="badge bg-secondary" style="font-size: 11px">SANKSI BELUM ADA</span>
-                                @else
+                              
                                 {!! $status !!}
-                                @endif
+               
                             </td>
                             <td>{!! $statusSanksi !!}</td>
                             <td>{{$sanction->userCreated?->name}}</td>

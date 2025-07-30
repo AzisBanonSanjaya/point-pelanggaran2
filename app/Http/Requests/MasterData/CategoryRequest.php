@@ -27,6 +27,8 @@ class CategoryRequest extends FormRequest
             'name' => 'required',
             'point' => 'required',
             'type' => 'required',
+            'rekomendasi'   => 'required|array|min:1',
+            'rekomendasi.*' => 'required|string|max:255',
         ];
     }
 

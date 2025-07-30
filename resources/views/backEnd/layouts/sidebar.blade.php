@@ -91,9 +91,9 @@
         @endcan
 
         @can('persetujuan-sanksi-pelanggaran-list')
-        <li class="nav-item">
-            <a class="nav-link {{ request()->is('manajemen-pelanggaran*') ? 'active' : 'collapsed' }}" href="{{ route('manajemen-pelanggaran.index') }}">
-                <i class="bi bi-person-bounding-box text-warning fs-5"></i><span>Persetujuan Sanksi Pelanggaran</span>
+         <li class="nav-item">
+            <a class="nav-link {{ request()->is('penentuan-sanksi*') ? 'active' : 'collapsed' }}" href="{{ route('penentuan-sanksi.index') }}">
+                <i class="bi bi-exclamation-triangle text-danger fs-5"></i><span>Penentuan Sanksi</span>
             </a>
         </li>
         @endcan

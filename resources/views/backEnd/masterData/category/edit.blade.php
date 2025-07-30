@@ -27,6 +27,22 @@
                       <label for="point" class="form-label">Point Pelanggaran <span class="text-red">*</span></label>
                       <input type="text" name="point" class="form-control @error('point') is-invalid @enderror number-only" id="point_edit" placeholder="Point Pelanggaran">
                     </div>
+					<div class="col-md-12 my-2">
+						<hr>
+						<h5>Rekomendasi Sanksi</h5>
+						<div class="d-flex justify-content-end mb-2">
+							<button type="button" class="btn btn-info mx-2 btn-add-rekomendasi-edit">
+								<i class="bi bi-plus"></i> Tambah Rekomendasi
+							</button>
+							<button type="button" class="btn btn-danger btn-remove-rekomendasi-edit">
+								<i class="bi bi-trash"></i> Hapus Rekomendasi
+							</button>
+						</div>
+
+						<div id="rekomendasi-container-edit">
+						</div>
+						<input type="hidden" id="rekomendasi-count-edit" value="0">
+					</div>
               	</div>
 			</div>
           	<div class="modal-footer">

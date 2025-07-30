@@ -97,13 +97,44 @@
                 type: 'GET',
             }).done(function (response) {
                 if(response.status){
-                    $("#name_edit").val(response.data.name);
-                    $("#point_edit").val(response.data.point);
-                    let htmlType = `<option value="Ringan"  ${response.data.type == 'Ringan' ? 'selected' : ''}>Ringan</option>`;
-                        htmlType += `<option value="Sedang"  ${response.data.type == 'Sedang' ? 'selected' : ''}>Sedang</option>`;
-                        htmlType += `<option value="Berat"  ${response.data.type == 'Berat' ? 'selected' : ''}>Berat</option>`;       
+                    $("#name_edit").val(response.data.category.name);
+                    $("#point_edit").val(response.data.category.point);
+                    let htmlType = `<option value="Ringan"  ${response.data.category.type == 'Ringan' ? 'selected' : ''}>Ringan</option>`;
+                        htmlType += `<option value="Sedang"  ${response.data.category.type == 'Sedang' ? 'selected' : ''}>Sedang</option>`;
+                        htmlType += `<option value="Berat"  ${response.data.category.type == 'Berat' ? 'selected' : ''}>Berat</option>`;       
                     $("#type_edit").html(htmlType);
                     $("#form-edit").attr('action', url);
+
+                    const recomendationContainer = $('#rekomendasi-container-edit');
+                    recomendationContainer.html(''); // Kosongkan container
+                    let recomendationCount = 0;
+
+                    // Loop data rekomendasi & buat HTML-nya
+                    if (response.data.rekomendasi && response.data.rekomendasi.length > 0) {
+                        $.each(response.data.rekomendasi, function(index, value) {
+                            recomendationCount++;
+                            let recomendationHtml = `
+                                <div class="rekomendasi-item-edit mb-2">
+                                    <label class="form-label">Rekomendasi Sanksi ${recomendationCount}</label>
+                                    <input type="text" name="rekomendasi[]" class="form-control" value="${value.name}" placeholder="Rekomendasi Sanksi" required>
+                                </div>
+                            `;
+                            recomendationContainer.append(recomendationHtml);
+                        });
+                    } else {
+                        // Jika tidak ada, buat satu input kosong
+                        recomendationCount = 1;
+                        let recomendationHtml = `
+                            <div class="rekomendasi-item-edit mb-2">
+                                <label class="form-label">Rekomendasi Sanksi 1</label>
+                                <input type="text" name="rekomendasi[]" class="form-control" placeholder="Rekomendasi Sanksi" required>
+                            </div>
+                        `;
+                        recomendationContainer.append(recomendationHtml);
+                    }
+                    
+                    $('#rekomendasi-count-edit').val(recomendationCount);
+                    $('.btn-remove-rekomendasi-edit').prop('disabled', recomendationCount <= 1);
                     $('#modal-edit').modal('show');
                 }
             })
@@ -148,6 +179,58 @@
                 }
             });
         });
+
+        $('.btn-add-rekomendasi-create').on('click', function () {
+            let count = parseInt($('#rekomendasi-count-create').val()) + 1;
+            $('#rekomendasi-count-create').val(count);
+
+            let html = `
+                <div class="rekomendasi-item-create mb-2">
+                    <label class="form-label">Rekomendasi Sanksi ${count} <span class="text-danger">*</span></label>
+                    <input type="text" name="rekomendasi[]" class="form-control" placeholder="Rekomendasi Sanksi" required>
+                </div>
+            `;
+            $('#rekomendasi-container-create').append(html);
+            $('.btn-remove-rekomendasi-create').prop('disabled', false);
+        });
+        $('.btn-remove-rekomendasi-create').on('click', function () {
+            let count = parseInt($('#rekomendasi-count-create').val());
+            if (count > 1) {
+                $('#rekomendasi-container-create .rekomendasi-item-create:last').remove();
+                count--;
+                $('#rekomendasi-count-create').val(count);
+
+                if (count <= 1) {
+                    $(this).prop('disabled', true);
+                }
+            }
+        });
+        $('.btn-add-rekomendasi-edit').on('click', function () {
+            let count = parseInt($('#rekomendasi-count-edit').val()) + 1;
+            $('#rekomendasi-count-edit').val(count);
+
+            let html = `
+                <div class="rekomendasi-item-edit mb-2">
+                    <label class="form-label">Rekomendasi Sanksi ${count}</label>
+                    <input type="text" name="rekomendasi[]" class="form-control" placeholder="Rekomendasi Sanksi" required>
+                </div>
+            `;
+            $('#rekomendasi-container-edit').append(html);
+            $('.btn-remove-rekomendasi-edit').prop('disabled', false);
+        });
+
+        $('.btn-remove-rekomendasi-edit').on('click', function () {
+            let count = parseInt($('#rekomendasi-count-edit').val());
+            if (count > 1) {
+                $('#rekomendasi-container-edit .rekomendasi-item-edit:last').remove();
+                count--;
+                $('#rekomendasi-count-edit').val(count);
+                if (count <= 1) {
+                    $(this).prop('disabled', true);
+                }
+            }
+        });
+        
     </script>
 @endpush
 
