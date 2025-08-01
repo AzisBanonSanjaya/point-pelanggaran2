@@ -45,6 +45,8 @@ Route::middleware(['auth'])->group(function () {
         Route::resource('role', RoleController::class)->except(['create','edit','index','update']);
         Route::resource('permission', PermissionController::class)->except(['create','edit','index','update']);
         Route::get('profile', [ProfileController::class, 'index'])->name("profile.index");
+        Route::get('user-export', [UserController::class, 'export'])->name("user.export");
+        Route::post('user-import', [UserController::class, 'import'])->name("user.import");
         Route::post('profile', [ProfileController::class, 'store'])->name("profile.store");
         Route::get('user-struktur', [UserController::class, 'getStruktur'])->name("user.getStruktur");
     });

@@ -24,20 +24,24 @@
                     <div class="col-md-8 mt-2">
                         <div class="d-flex justify-content-end">
                              @can('permission-create')
-                                <button class="btn btn-outline-secondary me-2" data-bs-toggle="modal" data-bs-target="#modal-create-permission">
+                                <button class="btn btn-secondary me-2" data-bs-toggle="modal" data-bs-target="#modal-create-permission">
                                     <i class="bi bi-clipboard2-data-fill"></i> Set Permission
                                 </button>
                             @endcan
 
                             @can('role-create')
-                                <button class="btn btn-outline-info me-2"  data-bs-toggle="modal" data-bs-target="#modal-create-role">
+                                <button class="btn btn-info me-2"  data-bs-toggle="modal" data-bs-target="#modal-create-role">
                                     <i class="bi bi-person-fill-add"></i>  Set Role
                                 </button>
                             @endcan
 
                             @can('user-create')
-                                <button class="btn btn-primary"  data-bs-toggle="modal" data-bs-target="#modal-create">
+                                <button class="btn btn-primary me-2"  data-bs-toggle="modal" data-bs-target="#modal-create">
                                     <i class="bi bi-plus-circle-fill"></i>  Create User
+                                </button>
+
+                                <button class="btn btn-success"  data-bs-toggle="modal" data-bs-target="#modal-import">
+                                    <i class="bi bi-file-excel"></i>  Import User
                                 </button>
                             @endcan
                         </div>
@@ -72,6 +76,7 @@
   @include('backEnd.userManagement.role.create')
   @include('backEnd.userManagement.permission.create')
   @include('backEnd.userManagement.user.edit')
+  @include('backEnd.userManagement.user.import')
 @endsection
 @push('scripts')
   <script src="{{asset('assets/js/validation/user.js')}}"></script>

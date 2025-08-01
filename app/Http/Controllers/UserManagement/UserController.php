@@ -4,6 +4,7 @@ namespace App\Http\Controllers\UserManagement;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\UserManagement\UserRequest;
+use App\Imports\UserImport;
 use App\Models\MasterData\ClassRoom;
 use App\Models\User;
 use App\Services\UserManagement\UserService;
@@ -12,8 +13,16 @@ use Illuminate\Contracts\View\Factory;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\JsonResponse;
+use Maatwebsite\Excel\Facades\Excel;
 use Spatie\Permission\Models\Role;
 use Spatie\Permission\Models\Permission;
+use PhpOffice\PhpSpreadsheet\Style\Border;
+use PhpOffice\PhpSpreadsheet\Cell\DataType;
+use PhpOffice\PhpSpreadsheet\Style\Fill;
+use PhpOffice\PhpSpreadsheet\Settings;
+use PhpOffice\PhpSpreadsheet\Spreadsheet;
+use PhpOffice\PhpSpreadsheet\Style\Alignment;
+use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 
 class UserController extends Controller
 {
@@ -234,6 +243,99 @@ class UserController extends Controller
             'status' => true,
             'data' => $students,
         ], JsonResponse::HTTP_OK);
+    }
+
+    public function export(Request $request)
+    {
+        $users = User::whereHas('roles', function($q){
+            $q->where('name', 'User');
+        })->with(['classRoom'])
+        ->get();
+
+        if ($users->isEmpty()) {
+            return redirect()
+                ->route('user.index')
+                ->with('error', 'Data Siswa Tidak Ada');
+        }
+
+        $spreadsheet = new Spreadsheet();
+        $sheet = $spreadsheet->getActiveSheet()->setTitle("DATA SISWA");
+
+        // Set column dimensions
+        $columnLetters = range('A', 'Z');
+        foreach ($columnLetters as $letter) {
+            $sheet->getColumnDimension($letter)->setAutoSize(true);
+        }
+
+        // Set header row
+        $headerRow = ['No.', 'Name', 'Nis', 'Email','Nomor Handphone', 'Tgl Lahir', 'Kelas'];
+        $sheet->fromArray([$headerRow], null, 'A1');
+        $sheet->getStyle("A1:G1")->getFill()
+            ->setFillType(Fill::FILL_SOLID)
+            ->getStartColor()
+            ->setARGB('b4c6e7');
+
+        // Populate data rows
+        $startRow = 2;
+        foreach ($users as $key => $user) {
+            $rowData = [
+                $key + 1,
+                $user->name ?? '-',
+                $user->username ?? '-',
+                $user->email,
+                $user->phone_number ?? '-',
+                $user->date_of_birth ?? '-',
+                $user->classRoom->code ?? '-',
+            ];
+            $sheet->fromArray([$rowData], null, 'A' . $startRow);
+            $startRow++;
+        }
+
+        // Apply styles
+        $endRow = $startRow - 1;
+        $styleArray = [
+            'borders' => [
+                'allBorders' => [
+                    'borderStyle' => Border::BORDER_THIN,
+                    'color' => ['argb' => '00000000'],
+                ],
+            ],
+        ];
+        $sheet->getStyle('A2:G' . $endRow)->applyFromArray($styleArray);
+        $sheet->getStyle('A2:G' . $endRow)->getAlignment()->setVertical(Alignment::VERTICAL_TOP);
+        $sheet->getStyle('A2:A' . $endRow)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
+        $sheet->getStyle('B2:G' . $endRow)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_LEFT);
+
+        // Output the spreadsheet
+        $writer = new Xlsx($spreadsheet);
+        ob_end_clean();
+        header('Content-Type: application/vnd.ms-excel');
+        header('Content-Disposition: attachment;filename="import-siswa.xlsx"');
+        header('Cache-Control: max-age=0');
+        $writer->save('php://output');
+    }
+
+    public function import(Request $request)
+    {
+        $file = $request->file('file');
+       
+        if(!$file){
+            return redirect()->back()->with('error','Data File Tidak Ada');
+        }
+        try{
+            $import = new UserImport();
+            Excel::import($import, request()->file('file'));
+
+            $failedImports = $import->getFailedImports();
+            if (!empty($failedImports)) {
+                $failedMessage = 'Data User Tidak Ada';
+                return redirect()->route('user.index')->with('error', $failedMessage);
+            }
+            return redirect()->route('user.index')->with('success', 'User imported successfully.');
+        } catch (\Exception $e) {
+            return redirect()->route('user.index')->with('error', $e->getMessage());
+        }
+
     }
 
 }
