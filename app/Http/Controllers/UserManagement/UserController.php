@@ -335,7 +335,7 @@ class UserController extends Controller
 
             $failedImports = $import->getFailedImports();
             if (!empty($failedImports)) {
-                $failedMessage = 'Data User Tidak Ada';
+                $failedMessage = 'Gagal import Data: ' . implode(', ', $failedImports);
                 return redirect()->route('user.index')->with('error', $failedMessage);
             }
             return redirect()->route('user.index')->with('success', 'User imported successfully.');

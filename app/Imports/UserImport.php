@@ -13,6 +13,7 @@ use Illuminate\Support\Facades\Log;
 use Maatwebsite\Excel\Concerns\WithHeadingRow;
 use Maatwebsite\Excel\Concerns\ToCollection;
 use Spatie\Permission\Models\Role;
+use PhpOffice\PhpSpreadsheet\Shared\Date;
 use Str;
 
 class UserImport implements ToCollection, WithHeadingRow
@@ -30,12 +31,24 @@ class UserImport implements ToCollection, WithHeadingRow
                     $this->failedImports[] = $row['kelas'];
                     return;
                 }
+                $dateOfBirth = null;
+                if (!empty($row['tgl_lahir'])) {
+                    try {
+                        $dateOfBirth = Date::excelToDateTimeObject($row['tgl_lahir'])->format('Y-m-d');
+                    } catch (\Exception $e) {
+                        try {
+                            $dateOfBirth = \Carbon\Carbon::createFromFormat('d-m-Y', $row['tgl_lahir'])->format('Y-m-d');
+                        } catch (\Exception $e) {
+                            $dateOfBirth = null;
+                        }
+                    }
+                }
                 $user = User::create([
                     'name' => $row['name'],
                     'username' => $row['nis'],
                     'email' => $row['email'],
                     'phone_number' => $row['nomor_handphone'],
-                    'date_of_birth' => $row['tgl_lahir'],
+                    'date_of_birth' => $dateOfBirth,
                     'password' => bcrypt('password'),
                     'class_room_id' => $classRoom->id,
                 ]);
