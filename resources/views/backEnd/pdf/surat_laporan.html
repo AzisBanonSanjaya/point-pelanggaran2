@@ -1,0 +1,561 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Surat Laporan Pelanggaran Siswa</title>
+    <style>
+        @media print {
+            body { 
+                margin: 0; 
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
+            }
+            .no-print { display: none; }
+            @page {
+                size: A4;
+                margin: 1cm;
+            }
+        }
+        
+        body {
+            font-family: 'Times New Roman', serif;
+            font-size: 12pt;
+            line-height: 1.5;
+            max-width: 210mm;
+            margin: 0 auto;
+            padding: 0;
+            background-color: white;
+            color: #333;
+        }
+        
+        .document {
+            background-color: white;
+            padding: 25mm;
+            box-shadow: none;
+            border-radius: 0;
+            min-height: 297mm;
+            position: relative;
+            box-sizing: border-box;
+        }
+        
+        .header {
+            display: flex;
+            align-items: center;
+            border-bottom: 3px solid #2c3e50;
+            padding-bottom: 20px;
+            margin-bottom: 25px;
+            gap: 20px;
+        }
+        
+        .logo {
+            width: 80px;
+            height: 80px;
+            flex-shrink: 0;
+        }
+        
+        .logo img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            border-radius: 0;
+        }
+        
+        .school-info {
+            flex: 1;
+            text-align: center;
+        }
+        
+        .school-name {
+            font-size: 20pt;
+            font-weight: bold;
+            margin-bottom: 8px;
+            color: #2c3e50;
+            letter-spacing: 1px;
+        }
+        
+        .school-address {
+            font-size: 11pt;
+            color: #555;
+            line-height: 1.4;
+            margin-bottom: 5px;
+        }
+        
+        .contact-info {
+            font-size: 10pt;
+            color: #666;
+            font-style: italic;
+        }
+        
+        .letter-title {
+            font-size: 16pt;
+            font-weight: bold;
+            text-decoration: underline;
+            margin: 25px 0 15px;
+            text-align: center;
+            color: #2c3e50;
+            letter-spacing: 0.5px;
+        }
+        
+        .letter-number {
+            text-align: center;
+            margin-bottom: 25px;
+            font-size: 11pt;
+            font-weight: 500;
+        }
+        
+        .content {
+            text-align: justify;
+            margin-bottom: 30px;
+            line-height: 1.6;
+        }
+        
+        .content p {
+            margin-bottom: 12px;
+        }
+        
+        .student-info {
+            background: white;
+            padding: 15px;
+            border: 1px solid #ddd;
+            margin: 20px 0;
+            border-radius: 0;
+            box-shadow: none;
+        }
+        
+        .student-info h4 {
+            margin: 0 0 15px 0;
+            color: #dc3545;
+            font-size: 13pt;
+            font-weight: bold;
+        }
+        
+        .student-data {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-top: 10px;
+        }
+        
+        .data-item {
+            display: flex;
+            align-items: center;
+            padding: 5px 0;
+        }
+        
+        .data-label {
+            font-weight: bold;
+            min-width: 120px;
+            color: #555;
+        }
+        
+        .data-value {
+            flex: 1;
+            border-bottom: 1px dotted #999;
+            padding: 2px 8px;
+            min-height: 20px;
+            max-width: calc(100% - 130px);
+            overflow: hidden;
+            word-wrap: break-word;
+        }
+        
+        .violation-details {
+            background: white;
+            padding: 15px;
+            border: 1px solid #ddd;
+            margin: 20px 0;
+            border-radius: 0;
+            box-shadow: none;
+        }
+        
+        .violation-details h4 {
+            margin: 0 0 15px 0;
+            color: #856404;
+            font-size: 13pt;
+            font-weight: bold;
+        }
+        
+        .violation-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+        
+        .violation-item {
+            display: flex;
+            align-items: center;
+        }
+        
+        .violation-label {
+            font-weight: bold;
+            min-width: 100px;
+            color: #856404;
+        }
+        
+        .violation-value {
+            flex: 1;
+            border-bottom: 1px dotted #856404;
+            padding: 2px 8px;
+            min-height: 20px;
+            max-width: calc(100% - 110px);
+            overflow: hidden;
+            word-wrap: break-word;
+        }
+        
+        .description-area {
+            margin-top: 15px;
+        }
+        
+        .description-label {
+            font-weight: bold;
+            color: #856404;
+            margin-bottom: 8px;
+            display: block;
+        }
+        
+        .description-text {
+            border: 1px dotted #856404;
+            padding: 10px;
+            min-height: 80px;
+            border-radius: 4px;
+            background-color: rgba(255,255,255,0.7);
+            word-wrap: break-word;
+            overflow-wrap: break-word;
+        }
+        
+        .sanction-section {
+            background-color: white;
+            padding: 15px;
+            border: 1px solid #ddd;
+            margin: 20px 0;
+            border-radius: 0;
+        }
+        
+        .sanction-label {
+            font-weight: bold;
+            color: #495057;
+            margin-bottom: 8px;
+            display: block;
+        }
+        
+        .sanction-text {
+            border: 1px dotted #6c757d;
+            padding: 10px;
+            min-height: 60px;
+            border-radius: 4px;
+            background-color: white;
+            word-wrap: break-word;
+            overflow-wrap: break-word;
+        }
+        
+        .meeting-info {
+            background-color: white;
+            padding: 15px;
+            border: 1px solid #ddd;
+            margin: 20px 0;
+            border-radius: 0;
+        }
+        
+        .meeting-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 8px;
+            margin-top: 10px;
+        }
+        
+        .meeting-item {
+            display: flex;
+            align-items: center;
+        }
+        
+        .meeting-label {
+            font-weight: bold;
+            min-width: 120px;
+            color: #1976d2;
+        }
+        
+        .meeting-value {
+            flex: 1;
+            border-bottom: 1px dotted #1976d2;
+            padding: 2px 8px;
+            min-height: 20px;
+            max-width: calc(100% - 130px);
+            overflow: hidden;
+            word-wrap: break-word;
+        }
+        
+        .signature-section {
+            display: flex;
+            justify-content: space-between;
+            gap: 40px;
+            margin-top: 40px;
+            margin-bottom: 30px;
+        }
+        
+        .signature-box {
+            text-align: center;
+            width: 45%;
+            flex: 1;
+        }
+        
+        .signature-header {
+            font-weight: bold;
+            margin-bottom: 5px;
+            color: #2c3e50;
+        }
+        
+        .signature-line {
+            border-bottom: 1px solid #333;
+            margin: 60px 20px 10px;
+            height: 1px;
+        }
+        
+        .signature-name {
+            margin: 10px 0;
+        }
+        
+        .signature-name-field {
+            border-bottom: 1px dotted #333;
+            display: inline-block;
+            min-width: 180px;
+            padding: 2px 8px;
+            text-align: center;
+        }
+        
+        /* Additional signature section styling */
+        .signature-separator {
+            border-top: 1px solid #ddd;
+            margin: 20px 0;
+            padding-top: 20px;
+        }
+        
+        .buttons,
+        button,
+        .print-btn,
+        .edit-btn,
+        .reset-btn {
+            display: none;
+        }
+        
+        /* Responsive design */
+        @media (max-width: 768px) {
+            body {
+                padding: 10px;
+            }
+            
+            .document {
+                padding: 20px;
+            }
+            
+            .header {
+                flex-direction: column;
+                text-align: center;
+            }
+            
+            .student-data,
+            .violation-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .signature-section {
+                flex-direction: row;
+                gap: 20px;
+            }
+            
+            .signature-box {
+                width: 48%;
+            }
+            
+            .buttons {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            button {
+                width: 200px;
+            }
+        }
+</style>
+</head>
+<body>
+    <div class="document">
+        <div class="header">
+            <div class="logo">
+                <img src="https://via.placeholder.com/80x80/2c3e50/ffffff?text=LOGO" alt="Logo Sekolah" id="schoolLogo">
+            </div>
+            <div class="school-info">
+                <div class="school-name">SMA NEGERI 1 BANJARAN</div>
+                <div class="school-address">
+                    Jalan Ciapus No.7, Ciapus, Banjaran, Ciapus<br>
+                    Kec. Banjaran, Kabupaten Bandung, Jawa Barat 40377
+                </div>
+                <div class="contact-info">
+                    Telp: (022) 5940642 | Email: sma1banjaran@gmail.com
+                </div>
+            </div>
+        </div>
+
+        <div class="letter-title">SURAT PEMBERITAHUAN PELANGGARAN SISWA</div>
+        <div class="letter-number">
+            Nomor: <span class="data-value">001/BK/XII/2024</span>
+        </div>
+
+        <div class="content">
+            <p><strong>Kepada Yth.</strong><br>
+            Bapak/Ibu Orang Tua/Wali dari:<br>
+            <strong>Nama: <span class="data-value">Arid</span></strong></p>
+
+            <div class="student-info">
+                <h4>📋 DATA SISWA</h4>
+                <div class="student-data">
+                    <div class="data-item">
+                        <span class="data-label">Nama Lengkap:</span>
+                        <span class="data-value">Arid</span>
+                    </div>
+                    <div class="data-item">
+                        <span class="data-label">Kelas:</span>
+                        <span class="data-value">XI IPA A</span>
+                    </div>
+                    <div class="data-item">
+                        <span class="data-label">NISN:</span>
+                        <span class="data-value">2324511251</span>
+                    </div>
+                    <div class="data-item">
+                        <span class="data-label">Alamat:</span>
+                        <span class="data-value">Bandung</span>
+                    </div>
+                </div>
+            </div>
+
+            <p><strong>Dengan hormat,</strong><br>
+            Melalui surat ini kami bermaksud memberitahukan kepada Bapak/Ibu bahwa putra/putri Bapak/Ibu telah melakukan pelanggaran terhadap tata tertib sekolah.</p>
+
+            <div class="violation-details">
+                <h4>⚠️ DETAIL PELANGGARAN</h4>
+                <div class="violation-grid">
+                    <div class="violation-item">
+                        <span class="violation-label">Hari/Tanggal:</span>
+                        <span class="violation-value">Senin, 1 Agustus 2025</span>
+                    </div>
+                    <div class="violation-item">
+                        <span class="violation-label">Waktu:</span>
+                        <span class="violation-value">07.15 WIB</span>
+                    </div>
+                    <div class="violation-item">
+                        <span class="violation-label">Tempat:</span>
+                        <span class="violation-value">Halaman sekolah</span>
+                    </div>
+                    <div class="violation-item">
+                        <span class="violation-label">Jenis Pelanggaran:</span>
+                        <span class="violation-value">Terlambat masuk sekolah</span>
+                    </div>
+                </div>
+                
+                <div class="description-area">
+                    <span class="description-label">Deskripsi Kejadian:</span>
+                    <div class="description-text">
+                        Siswa datang ke sekolah melewati pukul 07.00 WIB sebanyak 3 kali dalam satu minggu tanpa alasan yang jelas.<br>
+                        Saat ditanya, siswa mengaku bangun terlambat dan tidak menyiapkan perlengkapan sebelumnya.<br>
+                        Hal ini mengganggu ketertiban saat apel pagi.
+                    </div>
+                </div>
+            </div>
+
+            <div class="sanction-section">
+                <span class="sanction-label">📝 Sanksi yang diberikan:</span>
+                <div class="sanction-text">
+                    - Peringatan tertulis<br>
+                    - Pemanggilan orang tua<br>
+                    - Kewajiban datang 30 menit lebih awal selama 1 minggu
+                </div>
+            </div>
+
+            <p>Kami berharap Bapak/Ibu dapat memberikan bimbingan dan pengawasan yang lebih intensif kepada putra/putri Bapak/Ibu agar tidak mengulangi perbuatan serupa di kemudian hari.</p>
+
+            <p><strong>Untuk keperluan tindak lanjut, kami mengharapkan Bapak/Ibu dapat hadir ke sekolah pada:</strong></p>
+            
+            <div class="meeting-info">
+                <div class="meeting-grid">
+                    <div class="meeting-item">
+                        <span class="meeting-label">Hari/Tanggal:</span>
+                        <span class="meeting-value">Selasa, 5 Agustus 2025</span>
+                    </div>
+                    <div class="meeting-item">
+                        <span class="meeting-label">Waktu:</span>
+                        <span class="meeting-value">09.00 WIB</span>
+                    </div>
+                    <div class="meeting-item">
+                        <span class="meeting-label">Tempat:</span>
+                        <span class="meeting-value">Ruang BK SMA Negeri 1 Banjaran</span>
+                    </div>
+                </div>
+            </div>
+
+            <p>Demikian surat pemberitahuan ini kami sampaikan. Atas perhatian dan kerjasamanya, kami ucapkan terima kasih.</p>
+            
+            <p><strong>Catatan:</strong> Surat ini dibuat sebagai bentuk komunikasi antara sekolah dan orang tua untuk pembinaan bersama terhadap siswa.</p>
+        </div>
+
+        <div class="signature-section">
+            <div class="signature-box">
+                <div class="signature-header">Mengetahui,</div>
+                <div>Kepala Sekolah</div>
+                <div class="signature-line"></div>
+                <div class="signature-name">
+                    (<span class="signature-name-field">Drs. H. Ahmad Sutisna</span>)<br>
+                    <span style="font-size: 10pt;">NIP. <span class="signature-name-field">19650405 199001 1 002</span></span>
+                </div>
+            </div>
+            <div class="signature-box">
+                <div class="signature-header">Banjaran, <span class="data-value">4 Agustus 2025</span></div>
+                <div>Guru BK/Wali Kelas</div>
+                <div class="signature-line"></div>
+                <div class="signature-name">
+                    (<span class="signature-name-field">Siti Nurhaliza, S.Pd</span>)<br>
+                    <span style="font-size: 10pt;">NIP. <span class="signature-name-field">19800312 200501 2 003</span></span>
+                </div>
+            </div>
+        </div>
+
+        <div class="signature-section signature-separator">
+            <div class="signature-box">
+                <div class="signature-header">Mengetahui,</div>
+                <div>Orang Tua/Wali Siswa</div>
+                <div class="signature-line"></div>
+                <div class="signature-name">
+                    (<span class="signature-name-field">Bapak Asep Supriatna</span>)
+                </div>
+            </div>
+            <div class="signature-box">
+                <div class="signature-header">Siswa yang Bersangkutan</div>
+                <div style="margin-top: 10px;">&nbsp;</div>
+                <div class="signature-line"></div>
+                <div class="signature-name">
+                    (<span class="signature-name-field">Arid</span>)
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function changeLogo() {
+            const logoUrl = prompt("Masukkan URL logo sekolah:", "https://via.placeholder.com/80x80/2c3e50/ffffff?text=LOGO");
+            if (logoUrl) {
+                document.getElementById('schoolLogo').src = logoUrl;
+            }
+        }
+
+        function printDocument() {
+            window.print();
+        }
+
+        document.addEventListener('keydown', function(e) {
+            if (e.ctrlKey && e.key === 'p') {
+                e.preventDefault();
+                printDocument();
+            }
+        });
+    </script>
+</body>
+</html>
