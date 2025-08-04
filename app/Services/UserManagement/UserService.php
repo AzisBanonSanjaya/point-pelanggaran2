@@ -5,6 +5,7 @@ namespace App\Services\UserManagement;
 use App\Http\Requests\UserManagement\UserRequest;
 use App\Http\Traits\ImageTrait;
 use App\Models\User;
+use App\Models\UserParent;
 use Auth;
 use Illuminate\Http\Request;
 use Illuminate\Http\RedirectResponse;
@@ -38,12 +39,20 @@ class UserService
                 unset($data['role_id']);
                 $users = User::create($data);
             }
+
             if(!empty($users['id'])){
                 $users->assignRole($roles);
-                DB::commit();
-                Log::channel('log-transaction')->info(($users->wasRecentlyCreated ? 'User Created!' : 'User Updated!'), ['User' =>  Auth::user()->name]);
-                return redirect()->route('user.index')->with('success', 'Data berhasil ' . ($users->wasRecentlyCreated ? 'ditambahkan!' : 'diubah!'));
+                UserParent::where('user_id',$users->id)->delete();
+                UserParent::create([
+                    'user_id' => $users->id,
+                    'name' => $data['name_parent'],
+                    'email' => $data['email_parent'],
+                ]);
             }
+            
+            DB::commit();
+            Log::channel('log-transaction')->info(($users->wasRecentlyCreated ? 'User Created!' : 'User Updated!'), ['User' =>  Auth::user()->name]);
+            return redirect()->route('user.index')->with('success', 'Data berhasil ' . ($users->wasRecentlyCreated ? 'ditambahkan!' : 'diubah!'));
 
         } catch (\Exception $e) {
             DB::rollback();

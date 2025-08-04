@@ -79,7 +79,6 @@
   @include('backEnd.userManagement.user.import')
 @endsection
 @push('scripts')
-  <script src="{{asset('assets/js/validation/user.js')}}"></script>
     <script>
         $(document).ready(function () {
             @if (count($errors) > 0)
@@ -141,8 +140,12 @@
                         classRooms.forEach(classRoom => {
                             htmlClassRoom += `<option value="${classRoom.id}" ${classRoom.selected}>${classRoom.code}</option>`;
                         });
+                        
                         $('#role_id_edit').html(option_role);
                         $('#class_room_id_edit').html(htmlClassRoom);
+                        $('#name_parent_edit').val(response.data.name_parent);
+                        $('#email_parent_edit').val(response.data.email_parent);
+                        $(".role_id").trigger('change');
                         $("#form-edit").attr('action', url);
                         $('#modal-edit').modal('show');
                     }
@@ -152,8 +155,8 @@
                 });
             });
             $('#data-table-user tbody').on('click', '.delete', function () {
-                var id = $(this).data('id');
-                var url = $(this).data('url-destroy');
+                let id = $(this).data('id');
+                let url = $(this).data('url-destroy');
                 Swal.fire({
                     title: "Are you sure delete it?",
                     icon: "warning",
@@ -187,6 +190,15 @@
                         });
                     }
                 });
+            });
+
+            $(".role_id").on('change', function () {
+                let roleName = $(this).find(':selected').text();
+                if(roleName == 'User'){
+                    $(".parentWrapper").removeClass('hidden');
+                }else{
+                    $(".parentWrapper").addClass('hidden');
+                }
             });
         });
 

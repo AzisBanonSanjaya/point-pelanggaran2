@@ -34,6 +34,8 @@ class UserRequest extends FormRequest
                 'class_room_id' => ['nullable'],
                 'date_of_birth' => ['nullable'],
                 'phone_number' => ['nullable'],
+                'name_parent' => ['nullable'],
+                'email_parent' => ['nullable'],
             ];
         }else{
             return [
@@ -46,6 +48,8 @@ class UserRequest extends FormRequest
                 'class_room_id' => ['nullable'],
                 'date_of_birth' => ['nullable'],
                 'phone_number' => ['nullable'],
+                'name_parent' => ['nullable'],
+                'email_parent' => ['nullable'],
             ];
         }
     }

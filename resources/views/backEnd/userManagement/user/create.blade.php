@@ -53,7 +53,7 @@
                     </div>
                     <div class="col-md-4">
                         <label for="role_id" class="form-label">Role <span class="text-red">*</span></label>
-                        <select class="form-select @error('role_id') is-invalid @enderror"  name="role_id[]" id="role_id" data-selectModalCreatejs="true" data-placeholder="Pilih Role">
+                        <select class="form-select @error('role_id') is-invalid @enderror role_id"  name="role_id[]" id="role_id" data-selectModalCreatejs="true" data-placeholder="Pilih Role">
                             <option value="" selected disabled>Pilih Role</option>
                             @foreach ($roles as $role)
                                 <option value="{{$role->id}}">{{$role->name}}</option>
@@ -72,6 +72,28 @@
                             @endforeach
                         </select>
                     </div>
+                </div>
+                <div class="row my-2 hidden parentWrapper">
+                    <div class="col-lg-12">
+                        <h5 class="card-title">Data Orang Tua</h5>
+                    </div>
+                    <div class="row">
+                         <div class="col-lg-6">
+                            <label for="name_parent" class="form-label">Nama Orang Tua <span class="text-red">*</span></label>
+                            <input type="text" class="form-control @error('name_parent') is-invalid @enderror" name="name_parent" id="name_parent" autocomplete="off" placeholder="Nama Orang Tua">
+                            @error('name_parent')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                        </div>
+                        <div class="col-lg-6">
+                            <label for="email_parent" class="form-label">Email Orang Tua <span class="text-red">*</span></label>
+                            <input type="email" class="form-control @error('email_parent') is-invalid @enderror" name="email_parent" id="email_parent" autocomplete="off" placeholder="Email Orang Tua">
+                            @error('email_parent')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                        </div>
+                    </div>
+                   
                 </div>
             </div>
             <div class="modal-footer">

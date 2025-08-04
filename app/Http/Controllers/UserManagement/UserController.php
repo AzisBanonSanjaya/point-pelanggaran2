@@ -7,6 +7,7 @@ use App\Http\Requests\UserManagement\UserRequest;
 use App\Imports\UserImport;
 use App\Models\MasterData\ClassRoom;
 use App\Models\User;
+use App\Models\UserParent;
 use App\Services\UserManagement\UserService;
 use Illuminate\Http\Request;
 use Illuminate\Contracts\View\Factory;
@@ -101,6 +102,10 @@ class UserController extends Controller
                     $classRoom->selected = ($classRoom->id === $user->class_room_id) ? 'selected' : '';
                 });
             }
+
+            $userParent = UserParent::where('user_id', $user->id)->first();
+            $user->name_parent = $userParent?->name ?? '';
+            $user->email_parent = $userParent?->email ?? '';
 
             return response()->json([
                 'status'  => true,
@@ -247,7 +252,7 @@ class UserController extends Controller
 
     public function export(Request $request)
     {
-        $users = User::whereHas('roles', function($q){
+        $users = User::with('userParent')->whereHas('roles', function($q){
             $q->where('name', 'User');
         })->with(['classRoom'])
         ->get();
@@ -268,9 +273,9 @@ class UserController extends Controller
         }
 
         // Set header row
-        $headerRow = ['No.', 'Name', 'Nis', 'Email','Nomor Handphone', 'Tgl Lahir', 'Kelas'];
+        $headerRow = ['No.', 'Name', 'Nis', 'Email','Nomor Handphone', 'Tgl Lahir', 'Kelas', 'Name Orang Tua', 'Email Orang Tua'];
         $sheet->fromArray([$headerRow], null, 'A1');
-        $sheet->getStyle("A1:G1")->getFill()
+        $sheet->getStyle("A1:I1")->getFill()
             ->setFillType(Fill::FILL_SOLID)
             ->getStartColor()
             ->setARGB('b4c6e7');
@@ -286,6 +291,8 @@ class UserController extends Controller
                 $user->phone_number ?? '-',
                 $user->date_of_birth ?? '-',
                 $user->classRoom->code ?? '-',
+                $user->userParent?->name ?? '',
+                $user->userParent?->email ?? '',
             ];
             $sheet->fromArray([$rowData], null, 'A' . $startRow);
             $startRow++;
@@ -301,10 +308,10 @@ class UserController extends Controller
                 ],
             ],
         ];
-        $sheet->getStyle('A2:G' . $endRow)->applyFromArray($styleArray);
-        $sheet->getStyle('A2:G' . $endRow)->getAlignment()->setVertical(Alignment::VERTICAL_TOP);
+        $sheet->getStyle('A2:I' . $endRow)->applyFromArray($styleArray);
+        $sheet->getStyle('A2:I' . $endRow)->getAlignment()->setVertical(Alignment::VERTICAL_TOP);
         $sheet->getStyle('A2:A' . $endRow)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
-        $sheet->getStyle('B2:G' . $endRow)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_LEFT);
+        $sheet->getStyle('B2:I' . $endRow)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_LEFT);
 
         // Output the spreadsheet
         $writer = new Xlsx($spreadsheet);

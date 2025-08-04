@@ -54,7 +54,7 @@
                     </div>
                     <div class="col-md-4">
                         <label for="role_id" class="form-label">Role <span class="text-red">*</span></label>
-                        <select class="form-select @error('role_id') is-invalid @enderror"  name="role_id[]" id="role_id_edit" data-selectModalEditjs="true" data-placeholder="Pilih Role">
+                        <select class="form-select @error('role_id') is-invalid @enderror role_id"  name="role_id[]" id="role_id_edit" data-selectModalEditjs="true" data-placeholder="Pilih Role">
                         </select>
                         @error('role_id')
                             <div class="invalid-feedback">{{ $message }}</div>
@@ -65,6 +65,27 @@
                         <select class="form-select @error('class_room_id') is-invalid @enderror"  name="class_room_id" id="class_room_id_edit" data-selectModalEditjs="true" data-placeholder="Pilih Kelas">
                             <option value="" selected disabled>Pilih Kelas</option>
                         </select>
+                    </div>
+                </div>
+                <div class="row my-2 hidden parentWrapper">
+                    <div class="col-lg-12">
+                        <h5 class="card-title">Data Orang Tua</h5>
+                    </div>
+                    <div class="row">
+                         <div class="col-lg-6">
+                            <label for="name_parent_edit" class="form-label">Nama Orang Tua <span class="text-red">*</span></label>
+                            <input type="text" class="form-control @error('name_parent') is-invalid @enderror" name="name_parent" id="name_parent_edit" autocomplete="off" placeholder="Nama Orang Tua">
+                            @error('name_parent')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                        </div>
+                        <div class="col-lg-6">
+                            <label for="email_parent_edit" class="form-label">Email Orang Tua <span class="text-red">*</span></label>
+                            <input type="email" class="form-control @error('email_parent') is-invalid @enderror" name="email_parent" id="email_parent_edit" autocomplete="off" placeholder="Email Orang Tua">
+                            @error('email_parent')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                        </div>
                     </div>
                 </div>
             </div>

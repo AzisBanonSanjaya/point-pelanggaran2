@@ -5,6 +5,7 @@ namespace App\Imports;
 
 use App\Models\User;
 use App\Models\MasterData\ClassRoom;
+use App\Models\UserParent;
 use Auth;
 use DB;
 use Illuminate\Support\Collection;
@@ -38,6 +39,17 @@ class UserImport implements ToCollection, WithHeadingRow
                     'password' => bcrypt('password'),
                     'class_room_id' => $classRoom->id,
                 ]);
+
+                if($row['name_orang_tua'] && $row['email_orang_tua']){
+                    UserParent::where('user_id', $user->id)->delete();
+                    UserParent::create([
+                        'user_id' => $user->id,
+                        'name' => $row['name_orang_tua'],
+                        'email' => $row['email_orang_tua'],
+                    ]);
+                }
+
+                
                 $role = Role::where('name', 'user')->first();
                 $user->assignRole([$role->id]);
            }

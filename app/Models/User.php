@@ -11,6 +11,7 @@ use Illuminate\Notifications\Notifiable;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Laravel\Sanctum\HasApiTokens;
 use Spatie\Permission\Traits\HasRoles;
 class User extends Authenticatable
@@ -94,5 +95,13 @@ class User extends Authenticatable
         return $this->belongsTo(ClassRoom::class);
 
     }
+
+    public function userParent(): HasOne
+    {
+        return $this->hasOne(UserParent::class);
+
+    }
+
+
 
 }
