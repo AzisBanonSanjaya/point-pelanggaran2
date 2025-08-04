@@ -42,12 +42,15 @@ class UserService
 
             if(!empty($users['id'])){
                 $users->assignRole($roles);
-                UserParent::where('user_id',$users->id)->delete();
-                UserParent::create([
-                    'user_id' => $users->id,
-                    'name' => $data['name_parent'],
-                    'email' => $data['email_parent'],
-                ]);
+                if(!empty($data['name_parent']) && !empty($data['email_parent'])){
+                    UserParent::where('user_id',$users->id)->delete();
+                    UserParent::create([
+                        'user_id' => $users->id,
+                        'name' => $data['name_parent'],
+                        'email' => $data['email_parent'],
+                    ]);
+                }
+                
             }
             
             DB::commit();
