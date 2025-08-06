@@ -33,7 +33,7 @@ class SubmittedMail extends Mailable
     public function envelope()
     {
         return new Envelope(
-            subject: 'Notifikai Tindakan Pelanggaran Siswa',
+            subject: 'Notifikasi Tindakan Pelanggaran Siswa',
         );
     }
 

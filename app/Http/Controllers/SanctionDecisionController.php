@@ -10,12 +10,14 @@ use App\Models\SanctionDecision;
 use App\Models\SanctionDecisionDetail;
 use App\Models\User;
 use App\Services\SanctionDecisionService;
-use DB;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
 use Illuminate\Contracts\View\Factory;
 use Illuminate\Contracts\View\View;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\File;
 use Mail;
+use PDF;
 
 class SanctionDecisionController extends Controller
 {
@@ -148,9 +150,7 @@ class SanctionDecisionController extends Controller
                 return redirect()->back()->with('error', 'Data Tidak Ada');
             }
 
-            // Handle file upload jika ada
             if ($request->hasFile('file')) {
-                // Hapus file lama jika ada
                 if ($sanctionDecision->file && Storage::disk('public')->exists($sanctionDecision->file)) {
                     Storage::disk('public')->delete($sanctionDecision->file);
                 }
@@ -161,6 +161,8 @@ class SanctionDecisionController extends Controller
                 $filePath = null;
             }
 
+
+
             $sanctionDecision->update([
                 'file' => $filePath,
                 'description' => $request->description,
@@ -168,11 +170,31 @@ class SanctionDecisionController extends Controller
             ]);
 
             DB::commit();
-            // Mail::to('azisbanon01@gmail.com')->send(new SubmittedMail($sanctionDecision));
+
+            if($sanctionDecision->total_point >= 76){
+                $email = $sanctionDecision->student->userParent->email ?? 'azisbanon01@gmail.com';
+                Mail::to($email)->send(new SubmittedMail($sanctionDecision));
+            }
             return redirect()->back()->with('success', 'Data berhasil diperbarui.');
         } catch (\Exception $e) {
             DB::rollback();
             return redirect()->back()->with('error', 'Terjadi kesalahan: ' . $e->getMessage());
         }
+    }
+
+    public function report($code){
+        $sanctionDecision = SanctionDecision::where('code', $code)
+                                        ->with('student.classRoom', 'sanctionDecisionDetail.category')
+                                        ->firstOrFail();
+        $logoPath = public_path('assets/img/sman-1.png');
+        $logoBase64 = '';
+
+        if (File::exists($logoPath)) {
+            $logoData = File::get($logoPath);
+            $logoType = File::mimeType($logoPath);
+            $logoBase64 = 'data:' . $logoType . ';base64,' . base64_encode($logoData);
+        }
+        $pdf = PDF::loadView('backEnd.pdf.surat_laporan', compact('sanctionDecision','logoBase64'));
+        return $pdf->stream('Surat_Pemberitahuan_'. $sanctionDecision->student->name .'.pdf');
     }
 }

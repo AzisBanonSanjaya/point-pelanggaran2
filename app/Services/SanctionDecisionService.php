@@ -48,7 +48,7 @@ class SanctionDecisionService
             $this->sanctionDecisionDetail($sanctionDecision, $request);
             DB::commit();
 
-            // Mail::to('azisbanon01@gmail.com')->send(new SanctionDecisionMail($sanctionDecision));
+            Mail::to('azisbanon01@gmail.com')->send(new SanctionDecisionMail($sanctionDecision));
 
             Log::channel('log-transaction')->info(($sanctionDecision->wasRecentlyCreated ? 'Penentuan Sanksi Created!' : 'Penentuan Sanksi Updated!'), ['User' =>  Auth::user()->name]);
             return redirect()->route('penentuan-sanksi.index')->with('success', 'Data berhasil ' . ($sanctionDecision->wasRecentlyCreated ? 'ditambahkan!' : 'diubah!')); 

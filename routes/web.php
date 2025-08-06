@@ -34,6 +34,7 @@ Route::post('/forgot-password', [LoginController::class, 'sendForgotPassword'])-
 Route::get('/password_reset', [LoginController::class, 'resetPassword'])->name("password.reset");
 Route::post('/password_reset', [LoginController::class, 'submitResetPassword'])->name("submit.password.reset");
 Route::post('/logout', [LoginController::class, 'logout'])->name("logout");
+Route::get('/laporan-pelanggaran/{code}', [SanctionDecisionController::class, 'report'])->name("report.pelanggaran");
 
 Route::middleware(['auth'])->group(function () {
     Route::get('dashboard', DashboardController::class)->name("dashboard");
